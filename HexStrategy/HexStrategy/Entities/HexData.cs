@@ -41,6 +41,8 @@ namespace HexStrategy
 		public BuildingType buildingType;
 		public TerrainType terrainType;
 
+        public String name;
+
 		public int population = 0;
 		public float wealth = 1;
 		public float longtitude;
@@ -135,27 +137,41 @@ namespace HexStrategy
 			}
 
 
-			if (this.terrainType == TerrainType.Plains && Core.RandomFloat () < 0.003f)
-				this.buildingType = BuildingType.Castle;
+            if (this.terrainType == TerrainType.Plains && Core.RandomFloat() < 0.003f)
+            {
+                this.buildingType = BuildingType.Castle;
+                this.name = Core.RandomTownName();
+            }
+
 
             color = new Color(this.alpha, this.alpha, this.alpha);
 		}
 
+
+
 		public void DrawLabels(SpriteBatch sb, Vector3 position)
 		{
 			if (buildingType == BuildingType.Castle) {
-				Vector3 location = Core.graphicsDevice.Viewport.Project(new Vector3(position.X, position.Y +2, position.Z), Core.camera.projection, Core.camera.view, Matrix.Identity);
+				Vector3 location = Core.graphicsDevice.Viewport.Project(new Vector3(position.X, position.Y, position.Z), Core.camera.projection, Core.camera.view, Matrix.Identity);
 				float distance = Vector3.DistanceSquared (position, Core.camera.position);
 
 				//Choose best font size from distance
-				SpriteFont font = Fonts.large;
+				SpriteFont font = Fonts.medium;
 				float scale = 1f;
+				Vector2 length = font.MeasureString(this.name);
+               
 
-				int length = "Castle".Length * 6;
+                if (distance > 3000f)
+                    return;
 
+                sb.Draw(Textures.white, new Rectangle(((int)location.X-(int)length.X/2)-2,
+                                                        (int)location.Y-1,
+                                                        (int)length.X + 4,
+                                                        (int)length.Y + 2), UserInterface.transparentBlack);
 
-				if (distance < 100f)
-				sb.DrawString (font, "Castle", new Vector2 ((int)location.X - length, (int)location.Y), UserInterface.fontColor,0f,Vector2.Zero, scale, SpriteEffects.None, 1f);
+                sb.DrawString (font, this.name, new Vector2 ((int)(location.X - (int)length.X/2), (int)location.Y), UserInterface.fontColor);
+               
+
 			}
 		}
 	}

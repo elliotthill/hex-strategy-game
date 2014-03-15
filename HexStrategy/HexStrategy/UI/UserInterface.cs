@@ -13,6 +13,7 @@ namespace HexStrategy
 		public static HexDetails hexDetails;
 
 		public static Color grey = new Color(100,100,100,100);
+        public static Color transparentBlack = new Color(0, 0, 0, 130);
 		public static Color fontColor = new Color(255,255,255,200);
 
 		public static int textSpacing = 15;

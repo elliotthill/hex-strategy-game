@@ -147,6 +147,56 @@ namespace HexStrategy
 			return "Error";
 		}
 
+        public static String RandomTownName()
+        {
+            int rnd = random.Next(10);
+
+            switch (rnd)
+            {
+
+                case 1:
+                    return "Constantinople";
+                    break;
+
+                case 2:
+                    return "Rome";
+                    break;
+
+                case 3:
+                    return "Cairo";
+                    break;
+
+                case 4:
+                    return "Beijing";
+                    break;
+
+                case 5:
+                    return "London";
+                    break;
+
+                case 6:
+                    return "Paris";
+                    break;
+
+                case 7:
+                    return "Tokyo";
+                    break;
+
+                case 8:
+                    return "Madrid";
+
+                    break;
+                case 9:
+                    return "Moscow";
+                    break;
+
+                case 10:
+                    return "Lisbon";
+                    break;
+            }
+
+            return "Error";
+        }
 	}
 }
 

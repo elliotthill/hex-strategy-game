@@ -14,10 +14,9 @@ namespace HexStrategy
 		private float aspectRatio, rotationY = 0.0f;
 		private Vector3 up, right, forward, lookAt;
 
-		public Vector3 position = new Vector3(0,60,0);
+		public Vector3 position = new Vector3(0,30,0);
 		public Matrix view, projection, rotation;
 
-		
 		public float closeDistance = 2200f;
         public float farDistance = 24000f;
 
@@ -58,23 +57,23 @@ namespace HexStrategy
 			/*
 			 * WASD to move
 			 */
-			if (Core.keyboardState.IsKeyDown (Keys.W)) {
+			if (Core.keyboardState.IsKeyDown (Keys.NumPad8)) {
 				position += forward * Core.tick * Core.mapSpeed;
-			} else if (Core.keyboardState.IsKeyDown (Keys.S)) {
+			} else if (Core.keyboardState.IsKeyDown (Keys.NumPad2)) {
 				position -= forward * Core.tick * Core.mapSpeed;
 			} 
-			if (Core.keyboardState.IsKeyDown (Keys.A)) {
+			if (Core.keyboardState.IsKeyDown (Keys.NumPad4)) {
 				position -= right * Core.tick * Core.mapSpeed; 
-			} else if (Core.keyboardState.IsKeyDown (Keys.D)) {
+			} else if (Core.keyboardState.IsKeyDown (Keys.NumPad6)) {
 				position += right * Core.tick * Core.mapSpeed;
 			} 
 
 			/*
 			 * QE to rotate
 			 */
-			if (Core.keyboardState.IsKeyDown (Keys.Q)) {
+			if (Core.keyboardState.IsKeyDown (Keys.NumPad9)) {
 				rotationY += 1f * Core.tick;
-			} else if (Core.keyboardState.IsKeyDown (Keys.E)) {
+			} else if (Core.keyboardState.IsKeyDown (Keys.NumPad7)) {
 				rotationY -= 1f * Core.tick;
 			}
 

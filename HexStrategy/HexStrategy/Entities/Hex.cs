@@ -50,7 +50,7 @@ namespace HexStrategy
 		public void DrawLabels(SpriteBatch sb)
 		{
 			if (Core.camera.GetHexCullState (this) == CullState.Close)
-			this.hexData.DrawLabels(sb, position);
+			    this.hexData.DrawLabels(sb, position);
 
 		}
 	}

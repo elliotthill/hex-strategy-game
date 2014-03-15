@@ -17,9 +17,9 @@ namespace HexStrategy
 		public static void LoadContent(ContentManager content)
 		{
 			small = content.Load<SpriteFont>("Fonts/bitmapSmall");
-            medium = content.Load<SpriteFont>("Fonts/bitmapSmall");
-            large = content.Load<SpriteFont>("Fonts/bitmapSmall");
-            ultra = content.Load<SpriteFont>("Fonts/bitmapSmall");
+            medium = content.Load<SpriteFont>("Fonts/bitmapMedium");
+            large = content.Load<SpriteFont>("Fonts/bitmapBig");
+            ultra = content.Load<SpriteFont>("Fonts/bitmapGiant");
 		}
 
 	}
