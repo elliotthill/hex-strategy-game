@@ -27,6 +27,9 @@ namespace HexStrategy
         List<Hex> savannaHex = new List<Hex>();
         List<Hex> rainforestHex = new List<Hex>();
         List<Hex> steppeHex = new List<Hex>();
+
+        List<Hex> castleHex = new List<Hex>();
+
         #endregion
 
         //FBX hex model is imperfect
@@ -48,7 +51,6 @@ namespace HexStrategy
             foreach (Hex hex in hexList)
             {
                 hex.world = Matrix.CreateTranslation(hex.position);
-                hex.color = new Color(hex.hexData.alpha, hex.hexData.alpha, hex.hexData.alpha);
             }
 
 		}
@@ -92,8 +94,6 @@ namespace HexStrategy
 				}
 			}
 		}
-
-
 
 		public void Update(GameTime gameTime)
 		{
@@ -172,6 +172,7 @@ namespace HexStrategy
             savannaHex.Clear();
             rainforestHex.Clear();
             steppeHex.Clear();
+            castleHex.Clear();
 
             /* Sort each visible hex into appropriate sublist */
             foreach (Hex hex in visibleHex)
@@ -203,23 +204,36 @@ namespace HexStrategy
                 else if (hex.hexData.terrainType == TerrainType.Steppe)
                     steppeHex.Add(hex);
 
-                hex.Draw();
+                if (hex.hexData.buildingType == BuildingType.Castle)
+                    castleHex.Add(hex);
+                
             }
 
+            Model hexModel = Meshes.hexTopInstanced;
+
             /* Batch draw each sublist */
-            Render.DrawInstances(plainHex, Meshes.hexTop, Textures.green);
-            Render.DrawInstances(desertHex, Meshes.hexTop, Textures.yellow);
-            Render.DrawInstances(dryPlainHex, Meshes.hexTop, Textures.lightGreen);
-            Render.DrawInstances(waterHex, Meshes.hexTop, Textures.blue);
-            Render.DrawInstances(shallowWaterHex, Meshes.hexTop, Textures.lightBlue);
-            Render.DrawInstances(mountainHex, Meshes.hexTop, Textures.tree);
-            Render.DrawInstances(forestHex, Meshes.hexTop, Textures.tree);
-            Render.DrawInstances(coldPlainHex, Meshes.hexTop, Textures.snow);
-            Render.DrawInstances(iceHex, Meshes.hexTop, Textures.white);
-            Render.DrawInstances(snowHex, Meshes.hexTop, Textures.white);
-            Render.DrawInstances(savannaHex, Meshes.hexTop, Textures.lightGreen);
-            Render.DrawInstances(rainforestHex, Meshes.hexTop, Textures.tree);
-            Render.DrawInstances(steppeHex, Meshes.hexTop, Textures.DarkBrown);
+            Render.DrawInstances(plainHex, hexModel, Textures.green);
+            Render.DrawInstances(desertHex, hexModel, Textures.yellow);
+            Render.DrawInstances(dryPlainHex, hexModel, Textures.lightGreen);
+            Render.DrawInstances(waterHex, hexModel, Textures.blue);
+            Render.DrawInstances(shallowWaterHex, hexModel, Textures.lightBlue);
+            Render.DrawInstances(mountainHex, hexModel, Textures.tree);
+            Render.DrawInstances(forestHex, hexModel, Textures.tree);
+            Render.DrawInstances(coldPlainHex, hexModel, Textures.snow);
+            Render.DrawInstances(iceHex, hexModel, Textures.white);
+            Render.DrawInstances(snowHex, hexModel, Textures.white);
+            Render.DrawInstances(savannaHex, hexModel, Textures.lightGreen);
+            Render.DrawInstances(rainforestHex, hexModel, Textures.tree);
+            Render.DrawInstances(steppeHex, hexModel, Textures.DarkBrown);
+
+            /* Draw mountains, trees and castles */
+            Render.DrawInstances(mountainHex, Meshes.mountain, Textures.DarkBrown);
+            Render.DrawInstances(forestHex, Meshes.tree, Textures.green);
+            Render.DrawInstances(rainforestHex, Meshes.tree, Textures.DarkGreen);
+
+            Render.setWorld(Matrix.CreateScale(0.00065f) * Matrix.CreateTranslation(new Vector3(0f, 0.65f, 0.3f)));
+            Render.DrawInstances(castleHex, Meshes.castle, Textures.DarkBrown);
+            Render.setWorld(Matrix.Identity);
 		}
 
 		public void Draw2D(SpriteBatch sb)
@@ -230,6 +244,7 @@ namespace HexStrategy
 				hex.DrawLabels(sb);
 			}
 		}
+
 		public List<Hex> getSurroundingHexes(Hex hex)
 		{
 			//Get index of hex, and make new list to store surrounding hex

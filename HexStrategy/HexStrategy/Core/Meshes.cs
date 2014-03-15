@@ -11,7 +11,9 @@ namespace HexStrategy
 {
 	public static class Meshes
 	{
-		public static Model cube, hex, hexTop, hexTopSide, plane, castle, tree, mountain;
+		public static Model cube, hex, hexTop, hexTopSide,
+                            hexTopInstanced, hexTopSideInstanced,
+                            plane, castle, tree, mountain;
 
 		public static Vector3 castleTransform = new Vector3 (0, 0.3f, -0.2f);
 
@@ -23,6 +25,9 @@ namespace HexStrategy
             hex = content.Load<Model>("Meshes/hex");
             hexTop = content.Load<Model>("Meshes/hexTop");
             hexTopSide = content.Load<Model>("Meshes/hexTopSide");
+
+            hexTopInstanced = content.Load<Model>("Meshes/hexTopInstanced");
+            hexTopSideInstanced = content.Load<Model>("Meshes/hexTopSideInstanced");
 
             plane = content.Load<Model>("Meshes/plane");
             castle = content.Load<Model>("Meshes/castle");

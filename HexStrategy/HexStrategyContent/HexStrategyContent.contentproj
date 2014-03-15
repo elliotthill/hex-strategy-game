@@ -84,20 +84,20 @@
       <Importer>FbxImporter</Importer>
       <Processor>InstancedModelProcessor</Processor>
     </Compile>
-    <Compile Include="Meshes\hexTop.fbx">
-      <Name>hexTop</Name>
+    <Compile Include="Meshes\hexTopInstanced.fbx">
+      <Name>hexTopInstanced</Name>
       <Importer>FbxImporter</Importer>
       <Processor>InstancedModelProcessor</Processor>
     </Compile>
-    <Compile Include="Meshes\hexTopSide.fbx">
-      <Name>hexTopSide</Name>
+    <Compile Include="Meshes\hexTopSideInstanced.fbx">
+      <Name>hexTopSideInstanced</Name>
       <Importer>FbxImporter</Importer>
-      <Processor>ModelProcessor</Processor>
+      <Processor>InstancedModelProcessor</Processor>
     </Compile>
     <Compile Include="Meshes\mountain.fbx">
       <Name>mountain</Name>
       <Importer>FbxImporter</Importer>
-      <Processor>ModelProcessor</Processor>
+      <Processor>InstancedModelProcessor</Processor>
     </Compile>
     <Compile Include="Meshes\plane.fbx">
       <Name>plane</Name>
@@ -107,7 +107,7 @@
     <Compile Include="Meshes\tree.fbx">
       <Name>tree</Name>
       <Importer>FbxImporter</Importer>
-      <Processor>ModelProcessor</Processor>
+      <Processor>InstancedModelProcessor</Processor>
     </Compile>
   </ItemGroup>
   <ItemGroup>
@@ -232,6 +232,20 @@
       <Project>{ff69fd90-8834-4f60-ada5-36387f112437}</Project>
       <Name>InstancedModelPipeline</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Meshes\hexTop.fbx">
+      <Name>hexTop</Name>
+      <Importer>FbxImporter</Importer>
+      <Processor>ModelProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Meshes\hexTopSide.fbx">
+      <Name>hexTopSide</Name>
+      <Importer>FbxImporter</Importer>
+      <Processor>ModelProcessor</Processor>
+    </Compile>
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\XNA Game Studio\$(XnaFrameworkVersion)\Microsoft.Xna.GameStudio.ContentPipeline.targets" />
   <!--  To modify your build process, add your task inside one of the targets below and uncomment it. 

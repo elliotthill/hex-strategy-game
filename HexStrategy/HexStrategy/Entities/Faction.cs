@@ -62,10 +62,10 @@ namespace HexStrategy
 					continue;
 
 				// Copy any parent transforms.
-				Matrix[] transforms = new Matrix[Meshes.hexTopSide.Bones.Count];
-                Meshes.hexTopSide.CopyAbsoluteBoneTransformsTo(transforms);
+                Matrix[] transforms = new Matrix[Meshes.hexTop.Bones.Count];
+                Meshes.hexTop.CopyAbsoluteBoneTransformsTo(transforms);
 
-                foreach (ModelMesh mesh in Meshes.hexTopSide.Meshes)
+                foreach (ModelMesh mesh in Meshes.hexTop.Meshes)
 				{
 
 					foreach (BasicEffect effect in mesh.Effects)

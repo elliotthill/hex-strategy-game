@@ -30,6 +30,8 @@ namespace HexStrategy
 
         static EffectParameter colorMapTextureParameter;
 
+        //Global world matrix
+        static Matrix world = Matrix.Identity;
 
         public static void Initialize()
         {
@@ -49,6 +51,11 @@ namespace HexStrategy
             colorMapTextureParameter = effect.Parameters["ColorMap"];
         }
 
+        public static void setWorld(Matrix newWorld)
+        {
+            world = newWorld;
+        }
+
         public static void DrawInstances(List<Hex> hexes, Model model, Texture2D texture)
         {
 
@@ -59,8 +66,17 @@ namespace HexStrategy
 
             for (int i = 0; i < hexes.Count(); i++)
             {
+                if (hexes[i] == Core.map.selectedHex)
+                {
+
+                    data[i] = new InstanceDataVertex(world * hexes[i].world, Color.LightGray);
+                }
+                else
+                    data[i] = new InstanceDataVertex(world * hexes[i].world, hexes[i].hexData.color);
+
+                //If using world matrix override (e.g. for castle model)
                 
-                data[i] = new InstanceDataVertex(hexes[i].world, hexes[i].color);
+
             }
 
             #region Grow vertex buffer if neccessary

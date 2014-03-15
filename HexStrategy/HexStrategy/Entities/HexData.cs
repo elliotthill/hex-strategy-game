@@ -45,6 +45,7 @@ namespace HexStrategy
 		public float wealth = 1;
 		public float longtitude;
 		public float alpha = 1f;
+        public Color color;
 
 		public HexData(float longtitude, Vector3 x)
 		{
@@ -60,7 +61,7 @@ namespace HexStrategy
 
 			if (blueness > 1.2f) {
 				this.terrainType = TerrainType.Water;
-				this.alpha = (this.alpha / 2) + 0.2f;
+				this.alpha = (this.alpha / 2) + 0.35f;
 
 			} else if (greenness > 1.2f || blueness < 1.1f) {
 
@@ -75,18 +76,18 @@ namespace HexStrategy
 					this.terrainType = TerrainType.Plains;
 				else if (lightness > 60) {
 					this.terrainType = TerrainType.Forest;
-					this.alpha += Core.RandomFloat()/10f;
+					this.alpha += (Core.RandomFloat()/14f) + 0.05f;
 				}
 				else {
 					this.terrainType = TerrainType.Mountain;
-					this.alpha += Core.RandomFloat () / 8f;
+					this.alpha += (Core.RandomFloat () / 12f) + 0.05f;
 
 				}
 
 			} 
 			else {
 				this.terrainType = TerrainType.ShallowWater;
-				this.alpha = (this.alpha / 2) + 0.25f;
+				this.alpha = (this.alpha / 2) + 0.35f;
 			}
 
 
@@ -137,121 +138,7 @@ namespace HexStrategy
 			if (this.terrainType == TerrainType.Plains && Core.RandomFloat () < 0.003f)
 				this.buildingType = BuildingType.Castle;
 
-		}
-
-		public void Draw(Vector3 position)
-		{
-			
-			DrawScenery (position);
-			DrawBuildings (position);
-
-		}
-
-		private void DrawScenery(Vector3 position)
-		{
-			Texture texture;
-			Model model;
-
-			//Get texture
-			switch (this.terrainType) {
-
-
-			case TerrainType.Mountain:
-				texture = Textures.DarkBrown;
-				model = Meshes.mountain;
-				Core.dtShader.Draw(position + new Vector3(0f,-0.4f, 0f), model,texture , 1.2f + this.alpha, this.alpha, this.alpha*300f);
-				break;
-
-
-			case TerrainType.Forest:
-				texture = Textures.green;
-				model = Meshes.tree;
-				Core.dtShader.Draw(position+ new Vector3(0f, 0.0f, 0f), model,texture , 0.85f, this.alpha);
-
-				break;
-
-			case TerrainType.Rainforest:
-				texture = Textures.green;
-				model = Meshes.tree;
-				Core.dtShader.Draw(position+ new Vector3(0f, 0f, 0f), model,texture , 0.85f, this.alpha);
-				break;
-
-
-
-			}
-
-
-		}
-
-		private void DrawTerrain(Vector3 position)
-		{
-			Texture texture = Textures.lightGreen;
-			Model model = Meshes.hexTop;
-
-			//Get texture
-			switch (this.terrainType) {
-
-				case TerrainType.Plains:
-				texture = Textures.green;
-					break;
-
-				case TerrainType.DryPlains:
-					texture = Textures.lightGreen;
-					break;
-
-				case TerrainType.Savanna:
-					texture = Textures.lightGreen;
-					break;
-
-				case TerrainType.Desert:
-					texture = Textures.yellow;
-					break;
-
-				case TerrainType.Water:
-					
-					texture = Textures.blue;
-					break;
-
-				case TerrainType.ShallowWater:
-					texture = Textures.lightBlue;
-					//model = Meshes.hexTopSide;	
-					break;
-
-				case TerrainType.Mountain:
-					texture = Textures.tree;
-				//model = Meshes.hexTopSide;
-					break;
-
-				case TerrainType.Snow:
-					texture = Textures.white;
-					break;
-
-				case TerrainType.ColdPlains:
-					texture = Textures.snow;
-					break;
-
-				case TerrainType.Forest:
-					texture = Textures.tree;
-					break;
-
-				case TerrainType.Rainforest:
-					texture = Textures.tree;
-					break;
-
-
-
-			}
-
-			if (Core.map.selectedHex != null && Core.map.selectedHex.hexData == this)
-				Core.dtShader.Draw(position, model,texture , 1f, (this.alpha*Core.contrast+0.2f));
-			else
-				Core.dtShader.Draw(position, model,texture , 1f, (this.alpha*Core.contrast));
-		}
-
-		private void DrawBuildings(Vector3 position)
-		{
-			if (buildingType == BuildingType.Castle)
-				Core.dtShader.Draw (Meshes.getModelTransform("castle") + position, Meshes.castle, Textures.DarkBrown ,0.55f,this.alpha);
+            color = new Color(this.alpha, this.alpha, this.alpha);
 		}
 
 		public void DrawLabels(SpriteBatch sb, Vector3 position)
@@ -264,13 +151,10 @@ namespace HexStrategy
 				SpriteFont font = Fonts.large;
 				float scale = 1f;
 
-				if (distance > 1500f)
-					scale = 0.5f;
-
 				int length = "Castle".Length * 6;
 
 
-				//Font scaling algo (150f/distance)+0.2f
+				if (distance < 100f)
 				sb.DrawString (font, "Castle", new Vector2 ((int)location.X - length, (int)location.Y), UserInterface.fontColor,0f,Vector2.Zero, scale, SpriteEffects.None, 1f);
 			}
 		}

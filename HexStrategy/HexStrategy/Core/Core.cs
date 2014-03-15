@@ -17,15 +17,20 @@ namespace HexStrategy
 		public static float tick;
 		public static float mapSpeed = 35f;
 
-		public static int screenX = 1280;
-		public static int screenY = 720;
+        public static float scrollSpeed = 5f;
+
+		public static int screenX = 1440;
+		public static int screenY = 900;
 		public static float contrast = 1.6f;
 
 		public static Vector4 ambientLight = new Vector4(1f, 1f, 1f, 1f);
+        public static Vector3 ambientLight3 = new Vector3(1f, 1f, 1f);
+
 		public static Vector3 sunDirection = new Vector3(0.2f, -1f, 0.2f);
 		public static Vector4 sunDiffuse = new Vector4(1f,0.75f,0.65f, 1f);
-		public static Vector3 selectedAmbientLight = new Vector3(1f,1f,1f);
-		public static float ambientIntensity = 0.8f;
+        public static Vector3 sunDiffuse3 = new Vector3(1f, 0.75f, 0.65f);
+
+		public static float ambientIntensity = 0.6f;
 		public static float diffuseIntensity = 2f;
 
 

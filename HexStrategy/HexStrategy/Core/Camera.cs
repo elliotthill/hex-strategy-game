@@ -19,7 +19,7 @@ namespace HexStrategy
 
 		
 		public float closeDistance = 2200f;
-        public float farDistance = 12000f;
+        public float farDistance = 24000f;
 
 		private Vector3 lookNormal;
 
@@ -39,7 +39,7 @@ namespace HexStrategy
 			lookAt = new Vector3 (lookAt.X, 0, lookAt.Z);
 
 			view = Matrix.CreateLookAt (position, lookAt, Vector3.Up);
-			projection = Matrix.CreatePerspectiveFieldOfView (MathHelper.ToRadians (51f), aspectRatio, 2f, 2000f);
+			projection = Matrix.CreatePerspectiveFieldOfView (MathHelper.ToRadians (55f), aspectRatio, 2f, 2000f);
 
 			//Look normal for culling
 			lookNormal = position - lookAt;
@@ -83,7 +83,7 @@ namespace HexStrategy
 			 */
 			float scrollWheelDelta = (float)(Core.oldMouseState.ScrollWheelValue - Core.mouseState.ScrollWheelValue);
 
-			position = new Vector3(position.X, position.Y + (scrollWheelDelta/100), position.Z);
+			position = new Vector3(position.X, position.Y + (scrollWheelDelta/100)*Core.scrollSpeed, position.Z);
 
 		}
 
@@ -91,6 +91,7 @@ namespace HexStrategy
 		{
 
 		}
+
 		public void Focus(Hex hex)
 		{
 			position = new Vector3 (hex.position.X, position.Y, hex.position.Z);
