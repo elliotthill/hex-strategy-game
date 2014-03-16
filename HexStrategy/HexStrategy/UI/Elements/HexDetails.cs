@@ -36,6 +36,11 @@ namespace HexStrategy
 
 		public void Update(GameTime gameTime)
 		{
+            if (Core.map.selectedHex != null)
+                IsVisible = true;
+            else
+                IsVisible = false;
+
             if (!IsVisible)
                 return;
 		}

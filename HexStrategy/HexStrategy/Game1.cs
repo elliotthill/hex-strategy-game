@@ -81,10 +81,15 @@ namespace HexStrategy
         protected override void Update(GameTime gameTime)
         {
             Core.BeginUpdate(gameTime);
-            Core.map.Update(gameTime);
-            Clock.Update(gameTime);
             Core.camera.Update(gameTime);
+            Clock.Update(gameTime);
             UserInterface.Update(gameTime);
+            Core.map.Update(gameTime);
+
+            foreach (Faction faction in Core.factions)
+                faction.Update(gameTime);
+
+            
             Core.FinishUpdate(gameTime);
             base.Update(gameTime);
 
@@ -96,25 +101,32 @@ namespace HexStrategy
             bloom.BeginDraw();
             graphics.GraphicsDevice.Clear(new Color(20, 100, 255));
 
+            /* 3D Draw no transparency */
             GraphicsDevice.BlendState = BlendState.Opaque;
             GraphicsDevice.DepthStencilState = DepthStencilState.Default;
 
             Core.map.Draw3D();
+            foreach (Faction faction in Core.factions)
+                faction.DrawArmies();
+
+            /* 3D Draw with transparency */
 
             GraphicsDevice.BlendState = BlendState.AlphaBlend;
             GraphicsDevice.DepthStencilState = DepthStencilState.Default;
 
             foreach (Faction faction in Core.factions)
-                faction.Draw();
+                faction.DrawOwnershipFilter();
 
+            /* Component draw e.g. bloom*/
             base.Draw(gameTime);
 
+            /* 2D Draw */
             spriteBatch.Begin();
             Core.map.Draw2D(spriteBatch);
 
             UserInterface.Draw(spriteBatch);
 
-            spriteBatch.DrawString(Fonts.small, (1 / gameTime.ElapsedGameTime.TotalSeconds).ToString(), new Vector2(2, 2), Color.White);
+            //spriteBatch.DrawString(Fonts.small, (1 / gameTime.ElapsedGameTime.TotalSeconds).ToString(), new Vector2(2, 2), Color.White);
             spriteBatch.End();
 
 

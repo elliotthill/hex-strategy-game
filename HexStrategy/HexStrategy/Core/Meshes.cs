@@ -13,7 +13,7 @@ namespace HexStrategy
 	{
 		public static Model cube, hex, hexTop, hexTopSide,
                             hexTopInstanced, hexTopSideInstanced,
-                            plane, castle, tree, mountain;
+                            plane, castle, tree, mountain, knight;
 
 		public static Vector3 castleTransform = new Vector3 (0, 0.3f, -0.2f);
 
@@ -33,6 +33,7 @@ namespace HexStrategy
             castle = content.Load<Model>("Meshes/castle");
             tree = content.Load<Model>("Meshes/tree");
             mountain = content.Load<Model>("Meshes/mountain");
+            knight = content.Load<Model>("Meshes/knight");
 		}
 
 		public static Vector3 getModelTransform(String modelName)

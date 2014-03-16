@@ -44,7 +44,7 @@ namespace HexStrategy
         public String name;
 
 		public int population = 0;
-		public float wealth = 1;
+		public float wealth = 0.1f;
 		public float longtitude;
 		public float alpha = 1f;
         public Color color;
@@ -151,7 +151,7 @@ namespace HexStrategy
                 SpriteFont font = Fonts.medium;
 
 				Vector2 length = font.MeasureString(this.name);
-                font.Spacing = 1.2f;
+                
 
                 if (distance > 8000f)
                     return;

@@ -11,7 +11,7 @@ namespace HexStrategy
 	{
 		int width, height;
 		List<Hex> hexList = new List<Hex> ();
-
+        
         #region sublists
         List<Hex> visibleHex = new List<Hex>();
         List<Hex> plainHex = new List<Hex>();
@@ -38,6 +38,7 @@ namespace HexStrategy
 		float oddRowOffset = 1.49f;
 
 		public Hex selectedHex;
+        public Army selectedArmy;
 		public List<Hex> highlightedHex = new List<Hex>();
 
 		Vector3[,] heightData;
@@ -102,52 +103,90 @@ namespace HexStrategy
 
 		private void UpdateMouse(GameTime gameTime)
 		{
-			//Did the user click on the map?
-			if (Core.leftClickLastFrame == true) {
-
-				Vector3 nearSource = new Vector3 ((float)Core.mouseState.X, (float)Core.mouseState.Y, 0f);
-				Vector3 farSource = new Vector3 ((float)Core.mouseState.X, (float)Core.mouseState.Y, 1f);
-				Matrix world = Matrix.CreateTranslation (Vector3.Zero);
-
-
-				Vector3 nearPoint = Core.graphicsDevice.Viewport.Unproject (nearSource, 
-																			Core.camera.projection, 
-																			Core.camera.view, world);
-
-				Vector3 farPoint = Core.graphicsDevice.Viewport.Unproject (farSource, 
-																			Core.camera.projection, 
-																			Core.camera.view, world);
-
-				Vector3 direction = farPoint - nearPoint;
-				direction.Normalize ();
-
-				Ray pickRay = new Ray (nearPoint, direction);
-
-
-					foreach (Hex hex in hexList) {
-
-						if (Core.camera.GetHexCullState(hex) == CullState.Culled)
-							continue;
-
-
-						float? result = new BoundingSphere (new Vector3(hex.position.X, 
-																		hex.position.Y + 0.5f,
-																		hex.position.Z), 1f).Intersects (pickRay);
-
-						if (result.HasValue)
-						{
-							//User clicked this hex
-							this.selectedHex = hex;
-							
-							break;
-						}
-
-
-					}
-					
-			}
+            UpdateLeftMousePicking(gameTime);
+            UpdateRightMousePicking(gameTime);
 		}
+        private void UpdateLeftMousePicking(GameTime gameTime)
+        {
+            
+            if (Core.leftClickLastFrame == true)
+            {
 
+                /* Check user armies */
+                foreach (Army army in Core.userFaction.armyList)
+                {
+                    if (!Core.camera.Visible(army.getPosition()))
+                        continue;
+
+
+                    float? result = new BoundingSphere(new Vector3(army.getPosition().X,
+                                                                    army.getPosition().Y + 0.5f,
+                                                                    army.getPosition().Z), 1f).Intersects(Core.camera.PickRay());
+
+                    if (result.HasValue)
+                    {
+                        //User selected this army, also unset selected hex
+                        this.selectedArmy = army;
+                        this.selectedHex = null;
+                        return;
+                    }
+                }
+
+
+                /* Check each tile */
+                foreach (Hex hex in hexList)
+                {
+
+                    if (Core.camera.GetHexCullState(hex) == CullState.Culled)
+                        continue;
+
+
+                    float? result = new BoundingSphere(new Vector3(hex.position.X,
+                                                                    hex.position.Y + 0.5f,
+                                                                    hex.position.Z), 1f).Intersects(Core.camera.PickRay());
+                    if (result.HasValue)
+                    {
+                        //User clicked this hex
+                        this.selectedHex = hex;
+                        this.selectedArmy = null;
+                        return;
+                    }
+
+                }
+
+            }
+        }
+        private void UpdateRightMousePicking(GameTime gameTime)
+        {
+            if (Core.rightClickLastFrame == true)
+            {
+                
+                if (this.selectedArmy != null)
+                {
+                    //User has moved his army
+
+                    //Check for tile army should move to
+                    foreach (Hex hex in hexList)
+                    {
+
+                        if (Core.camera.GetHexCullState(hex) == CullState.Culled)
+                            continue;
+
+
+                        float? result = new BoundingSphere(new Vector3(hex.position.X,
+                                                                        hex.position.Y + 0.5f,
+                                                                        hex.position.Z), 1f).Intersects(Core.camera.PickRay());
+                        if (result.HasValue)
+                        {
+                            //User clicked this hex
+                            this.selectedArmy.Move(hex);
+                            return;
+                        }
+
+                    }
+                }
+            }
+        }
 		public  void Draw3D()
 		{
             /* Get list of visible hexes and clear sublists */
@@ -159,6 +198,7 @@ namespace HexStrategy
                     visibleHex.Add(hex);
             }
 
+            /* Sort those visible hexes into sublists for batch rendering */
             plainHex.Clear();
             desertHex.Clear();
             dryPlainHex.Clear();

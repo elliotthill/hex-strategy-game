@@ -130,6 +130,8 @@
     <Compile Include="Rendering\DTShader.cs" />
     <Compile Include="Rendering\Instancing\InstanceDataVertex.cs" />
     <Compile Include="Rendering\Render.cs" />
+    <Compile Include="UI\Elements\ArmyDetails.cs" />
+    <Compile Include="UI\Elements\FactionDetails.cs" />
     <Compile Include="UI\Elements\HexDetails.cs" />
     <Compile Include="UI\UserInterface.cs" />
   </ItemGroup>

@@ -63,6 +63,7 @@ namespace HexStrategy
 
 			if (model == null)
 				return;
+
 			Matrix[] transforms = new Matrix[model.Bones.Count];
 			model.CopyAbsoluteBoneTransformsTo(transforms);
 
@@ -70,8 +71,10 @@ namespace HexStrategy
 
 				foreach (ModelMeshPart meshPart in mesh.MeshParts) {
 
-					worldParameter.SetValue(Matrix.CreateScale(scale)* transforms[mesh.ParentBone.Index] * 
-						Matrix.CreateRotationY(rotation) * Matrix.CreateTranslation(pos));
+                    worldParameter.SetValue(Matrix.CreateScale(scale) * 
+                                            Matrix.CreateRotationY(rotation) *
+                                            transforms[mesh.ParentBone.Index] * 
+						                    Matrix.CreateTranslation(pos));
 					viewParameter.SetValue(Core.camera.view);
 					projectionParameter.SetValue(Core.camera.projection);
 

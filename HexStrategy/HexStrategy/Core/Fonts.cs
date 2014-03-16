@@ -20,6 +20,9 @@ namespace HexStrategy
             medium = content.Load<SpriteFont>("Fonts/bitmapMedium");
             large = content.Load<SpriteFont>("Fonts/bitmapBig");
             ultra = content.Load<SpriteFont>("Fonts/bitmapGiant");
+
+            large.Spacing = 1.3f;
+            medium.Spacing = 1.3f;
 		}
 
 	}

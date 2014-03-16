@@ -22,6 +22,11 @@ namespace HexStrategy
 
         public void UpdateDaily()
         {
+
+
+
+
+            //If hexes are less than 4 keep expanding territory
             if (this.faction.hexes().Count() > 4)
                 return;
 

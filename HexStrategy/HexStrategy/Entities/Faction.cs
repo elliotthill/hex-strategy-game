@@ -15,7 +15,7 @@ namespace HexStrategy
         public float treasury = 1f;
 
 		private List<Hex> hexList = new List<Hex> ();
-		private List<Army> armyList = new List<Army> ();
+		public List<Army> armyList = new List<Army> ();
 
         private List<Hex> addHex = new List<Hex>();
         private AIController aiController;
@@ -25,7 +25,7 @@ namespace HexStrategy
 			this.name = name;
 			this.color = color;
 
-			armyList.Add (new Army (hex));
+			armyList.Add (new Army (hex, this));
 
             if (AI)
                 aiController = new AIController(this);
@@ -61,7 +61,15 @@ namespace HexStrategy
 			hex.owner = null;
 		}
 
-		public void Draw()
+        public void DrawArmies()
+        {
+            foreach (Army army in armyList)
+            {
+                army.Draw3D();
+            }
+        }
+
+		public void DrawOwnershipFilter()
 		{
 			//Draws ownership filter
 			foreach (Hex hex in hexList) {
@@ -97,11 +105,13 @@ namespace HexStrategy
 					mesh.Draw();
 				}
 			}
-
-			foreach (Army army in armyList) {
-				army.Draw3D ();
-			}
 		}
+
+        public void Update(GameTime gameTime)
+        {
+            foreach (Army army in armyList)
+                army.Update(gameTime);
+        }
 
         public void UpdateDaily()
         {
@@ -121,7 +131,10 @@ namespace HexStrategy
 
         private void CollectTaxes()
         {
-
+            foreach (Hex hex in hexList)
+            {
+                treasury += hex.hexData.wealth;
+            }
         }
 
 	}

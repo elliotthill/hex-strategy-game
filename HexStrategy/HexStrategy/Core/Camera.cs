@@ -142,6 +142,31 @@ namespace HexStrategy
 
 			return true;
 		}
+
+        public Ray PickRay()
+        {
+            
+            Vector3 nearSource = new Vector3((float)Core.mouseState.X, (float)Core.mouseState.Y, 0f);
+            Vector3 farSource = new Vector3((float)Core.mouseState.X, (float)Core.mouseState.Y, 1f);
+            Matrix world = Matrix.CreateTranslation(Vector3.Zero);
+
+
+            Vector3 nearPoint = Core.graphicsDevice.Viewport.Unproject(nearSource,
+                                                                        this.projection,
+                                                                        this.view, world);
+
+            Vector3 farPoint = Core.graphicsDevice.Viewport.Unproject(farSource,
+                                                                        this.projection,
+                                                                        this.view, world);
+
+            Vector3 direction = farPoint - nearPoint;
+            direction.Normalize();
+
+            Ray pickRay = new Ray(nearPoint, direction);
+            return pickRay;
+        }
+
+
 	}
 }
 
