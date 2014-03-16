@@ -13,7 +13,7 @@ namespace HexStrategy
 		Unkown, Culled, Close, Far
 	}
 
-	public class Hex
+    public class Hex
 	{
 		public Vector3 position;
 
@@ -23,7 +23,7 @@ namespace HexStrategy
 
 		public Boolean odd = false;
 
-
+        private List<Hex> surroundingHexes;
 		public Faction owner;
 
 		public Hex(Vector3 position, Vector3 clr, float longtitude)
@@ -39,7 +39,7 @@ namespace HexStrategy
 
 			if (hexData.buildingType == BuildingType.Castle)
 			{
-				Faction faction = new Faction (Core.RandomFactionName (), Core.RandomColorAsVector (),this);
+				Faction faction = new Faction (Core.RandomFactionName (), Core.RandomColorAsVector (),this, true);
 				faction.AnnexHex (this);
 
 				Core.factions.Add(faction);
@@ -53,6 +53,20 @@ namespace HexStrategy
 			    this.hexData.DrawLabels(sb, position);
 
 		}
+
+        public void SetSurroundingHexes(List<Hex> hexes)
+        {
+            this.surroundingHexes = hexes;
+        }
+
+        /// <summary>
+        /// Use Map.GetSurroundingHexes() instead, this will return null if no cached list
+        /// </summary>
+        /// <returns></returns>
+        public List<Hex> GetSurroundingHexes()
+        {
+            return this.surroundingHexes;
+        }
 	}
 }
 

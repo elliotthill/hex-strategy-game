@@ -107,7 +107,9 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Core\AIController.cs" />
     <Compile Include="Core\Camera.cs" />
+    <Compile Include="Core\Clock.cs" />
     <Compile Include="Core\Core.cs" />
     <Compile Include="Core\Fonts.cs" />
     <Compile Include="Core\Meshes.cs" />

@@ -12,15 +12,23 @@ namespace HexStrategy
 		public String name;
 		public Vector3 color;
 
+        public float treasury = 1f;
+
 		private List<Hex> hexList = new List<Hex> ();
 		private List<Army> armyList = new List<Army> ();
 
-		public Faction (String name, Vector3 color, Hex hex)
+        private List<Hex> addHex = new List<Hex>();
+        private AIController aiController;
+
+		public Faction (String name, Vector3 color, Hex hex, Boolean AI)
 		{
 			this.name = name;
 			this.color = color;
 
 			armyList.Add (new Army (hex));
+
+            if (AI)
+                aiController = new AIController(this);
 		}
 
 		public List<Hex> hexes()
@@ -35,9 +43,9 @@ namespace HexStrategy
 				return;
 
 			if (hex.owner != null)
-			hex.owner.CedeHex (hex);
+			    hex.owner.CedeHex (hex);
 
-			this.hexList.Add (hex);
+			hexList.Add (hex);
 			hex.owner = this;
 
 		}
@@ -81,7 +89,7 @@ namespace HexStrategy
 							* Matrix.CreateTranslation(hex.position + new Vector3(0f,0.1f,0f));
 						effect.View = Core.camera.view;
 						effect.Projection = Core.camera.projection;
-						effect.Alpha = 0.4f;
+						effect.Alpha = 0.6f;
 
 						//effect.TextureEnabled = true;
 					}
@@ -95,6 +103,26 @@ namespace HexStrategy
 			}
 		}
 
+        public void UpdateDaily()
+        {
+            CollectTaxes();
+
+            if (this != Core.userFaction)
+            {
+                aiController.UpdateDaily();
+            }
+
+
+            /*
+            //Annex tiles around capital
+
+            */
+        }
+
+        private void CollectTaxes()
+        {
+
+        }
 
 	}
 }

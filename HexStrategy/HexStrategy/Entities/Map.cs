@@ -232,7 +232,7 @@ namespace HexStrategy
             Render.DrawInstances(rainforestHex, Meshes.tree, Textures.DarkGreen);
 
             Render.setWorld(Matrix.CreateScale(0.00065f) * Matrix.CreateTranslation(new Vector3(0f, 0.65f, 0.3f)));
-            Render.DrawInstances(castleHex, Meshes.castle, Textures.DarkBrown);
+            Render.DrawInstances(castleHex, Meshes.castle, Textures.grey);
             Render.setWorld(Matrix.Identity);
 		}
 
@@ -245,54 +245,66 @@ namespace HexStrategy
 			}
 		}
 
+        /// <summary>
+        /// This method is incredibly slow, not sure why
+        /// </summary>
+        /// <param name="hex"></param>
+        /// <returns></returns>
 		public List<Hex> getSurroundingHexes(Hex hex)
 		{
+            //Is it cached?
+            if (hex.GetSurroundingHexes() != null)
+                return hex.GetSurroundingHexes();
+
 			//Get index of hex, and make new list to store surrounding hex
 			int index = hexList.IndexOf(hex);
 			List<Hex> surroundingHexes = new List<Hex>();
 
+            int count = hexList.Count();
+
 			if (hex.odd) {
 
 				//If theres a tile above
-				if (hexList.Count () > index + height + 11 && index + height + 1 > 0)
+                if (count > index + height + 11 && index + height + 1 > 0)
 					surroundingHexes.Add (hexList [index + height + 1]);
 
-				if (hexList.Count () > index + height - 1 && index + height - 1 > 0)
+                if (count > index + height - 1 && index + height - 1 > 0)
 					surroundingHexes.Add (hexList [index + height - 1]);
 
-				if (hexList.Count () > index - 2 && index - 2 > 0)
+                if (count > index - 2 && index - 2 > 0)
 					surroundingHexes.Add (hexList [index - 2]);
 
-				if (hexList.Count () > index + 2 && index + 2 > 0)
+                if (count > index + 2 && index + 2 > 0)
 					surroundingHexes.Add (hexList [index + 2]);
 
-				if (hexList.Count () > index + 1 && index + 1 > 0)
+                if (count > index + 1 && index + 1 > 0)
 					surroundingHexes.Add (hexList [index + 1]);
 
-				if (hexList.Count () > index - 1 && index - 1 > 0)
+                if (count > index - 1 && index - 1 > 0)
 					surroundingHexes.Add (hexList [index - 1]);
 
 			} else {
 
-				if (hexList.Count () > index - height + 1 && index - height + 1 > 0)
+                if (count > index - height + 1 && index - height + 1 > 0)
 					surroundingHexes.Add (hexList [index - height + 1]);
 
-				if (hexList.Count () > index - height - 1 && index - height - 1 > 0)
+                if (count > index - height - 1 && index - height - 1 > 0)
 					surroundingHexes.Add (hexList [index - height - 1]);
 
-				if (hexList.Count () > index - 2 && index - 2 > 0)
+                if (count > index - 2 && index - 2 > 0)
 					surroundingHexes.Add (hexList [index - 2]);
 
-				if (hexList.Count () > index + 2 && index + 2 > 0)
+                if (count > index + 2 && index + 2 > 0)
 					surroundingHexes.Add (hexList [index + 2]);
 
-				if (hexList.Count () > index + 1 && index + 1 > 0)
+				if (count > index + 1 && index + 1 > 0)
 					surroundingHexes.Add (hexList [index + 1]);
 
-				if (hexList.Count () > index - 1 && index - 1 > 0)
+				if (count > index - 1 && index - 1 > 0)
 					surroundingHexes.Add (hexList [index - 1]);
 			}
 
+            hex.SetSurroundingHexes(surroundingHexes);
 			return surroundingHexes;
 
 

@@ -10,7 +10,7 @@ namespace HexStrategy
 {
 	public class HexDetails
 	{
-		protected Boolean IsVisible = false;
+		protected Boolean IsVisible = true;
 		public Rectangle bounds = new Rectangle(0,Core.screenY-300,200,300);
 		public List<Rectangle> buttonBounds = new List<Rectangle>();
 		//public Dictionary<Vector2> textBounds = new Dictionary<Vector2>();
@@ -26,6 +26,7 @@ namespace HexStrategy
 			textBounds.Add ("building", new Vector2 (bounds.X + UserInterface.textMargin, bounds.Y + (UserInterface.textSpacing * 2)));
 			textBounds.Add ("population", new Vector2 (bounds.X + UserInterface.textMargin, bounds.Y + (UserInterface.textSpacing * 3)));
             textBounds.Add ("color", new Vector2(bounds.X + UserInterface.textMargin, bounds.Y + (UserInterface.textSpacing * 4)));
+            textBounds.Add("owner", new Vector2(bounds.X + UserInterface.textMargin, bounds.Y + (UserInterface.textSpacing * 5)));
 		}
 
 
@@ -57,6 +58,9 @@ namespace HexStrategy
 				sb.DrawString(Fonts.medium, "Building: " + Core.map.selectedHex.hexData.buildingType.ToString(),textBounds["building"],Color.White);
 				sb.DrawString(Fonts.medium, "Population: " + Core.map.selectedHex.hexData.population.ToString(),textBounds["population"],Color.White);
                 sb.DrawString(Fonts.medium, "Color: " + Core.map.selectedHex.hexData.color.ToString(), textBounds["color"], Color.White);
+
+                if (Core.map.selectedHex.owner != null)
+                sb.DrawString(Fonts.medium, "Owner: " + Core.map.selectedHex.owner.name, textBounds["owner"], Color.White);
 			}
 		}
 

@@ -66,7 +66,7 @@ namespace HexStrategy
             Map map = new Map();
             Core.map = map;
 
-            Core.userFaction = Core.factions[35];
+            Core.userFaction = Core.factions[5];
             Core.camera.Focus(Core.userFaction.hexes()[0]);
 
             scenery = new Scenery();
@@ -82,6 +82,7 @@ namespace HexStrategy
         {
             Core.BeginUpdate(gameTime);
             Core.map.Update(gameTime);
+            Clock.Update(gameTime);
             Core.camera.Update(gameTime);
             UserInterface.Update(gameTime);
             Core.FinishUpdate(gameTime);
@@ -107,8 +108,6 @@ namespace HexStrategy
                 faction.Draw();
 
             base.Draw(gameTime);
-
-
 
             spriteBatch.Begin();
             Core.map.Draw2D(spriteBatch);

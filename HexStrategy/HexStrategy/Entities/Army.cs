@@ -14,14 +14,12 @@ namespace HexStrategy
 
 		public Army(Hex hex)
 		{
-
 			this.hex = hex;
 		}
 
 		public void Move(Hex hex)
 		{
 			this.hex = hex;
-
 		}
 
 		public void Draw3D()
