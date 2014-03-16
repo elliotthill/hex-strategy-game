@@ -82,7 +82,7 @@ namespace HexStrategy
 			{
 				for (int z = 0; z < height; z++)
 				{
-					Vector3 loc = new Vector3 (i * spacingX, 0, z * spacingZ);
+                    Vector3 loc = new Vector3(i * spacingX,0, z * spacingZ);
 					Hex hex = new Hex(loc, heightData[i,z], ((float)z/(float)height));
 
 					//Odd row offset
@@ -285,12 +285,92 @@ namespace HexStrategy
 			}
 		}
 
+        public List<Hex> GetWaypath(Hex source, Hex dest)
+        {
+            List<Hex> waypath = new List<Hex>();
+            waypath.Add(source);
+            List<Hex> checkedPaths = new List<Hex>();
+            Hex current = source;
+
+
+
+            Boolean done = false;
+
+            while (!done)
+            {
+                //Find closest hex to dest
+                float shortestDistance = -1f;
+                Hex shortestDistanceHex = null;
+
+
+                foreach (Hex hex in this.GetNeighbours(current))
+                {
+                    
+                    //Disallow certain terrain
+                    if (hex.hexData.terrainType == TerrainType.Water 
+                        || hex.hexData.terrainType == TerrainType.ShallowWater)
+                        continue;
+
+                    float cost = Vector3.DistanceSquared(hex.position, dest.position);
+                    cost *= hex.hexData.GetMovementCost();
+
+                    //Dont try checked paths again
+                    if (checkedPaths.Contains(hex) || waypath.Contains(hex))
+                        continue;
+
+                    //First one
+                    if (shortestDistance == -1f)
+                    {
+                        shortestDistanceHex = hex;
+                        shortestDistance = cost;
+                        continue;
+                    }
+
+                    //If its shortest distance and were not looping, this also means there are multiple options
+                    if (cost < shortestDistance)
+                    {
+
+                        shortestDistance = cost;
+                        shortestDistanceHex = hex;
+
+                    }
+                    
+                }
+
+                //Add next waypath
+                if (shortestDistanceHex != null)
+                {
+                        
+                    waypath.Add(shortestDistanceHex);
+                    current = shortestDistanceHex;
+                    checkedPaths.Add(current);
+
+                    
+                }
+                else
+                {
+                    //Cant find a route, roll back a waypoint and try a different tile
+                    Hex lastTile = waypath[waypath.Count() - 1];
+                    current = lastTile;
+                    waypath.Remove(lastTile);
+                    
+                }
+               
+
+                if (shortestDistanceHex == dest)
+                    done = true;
+
+            }
+
+            return waypath;
+        }
+
         /// <summary>
         /// This method is incredibly slow, not sure why
         /// </summary>
         /// <param name="hex"></param>
         /// <returns></returns>
-		public List<Hex> getSurroundingHexes(Hex hex)
+		public List<Hex> GetNeighbours(Hex hex)
 		{
             //Is it cached?
             if (hex.GetSurroundingHexes() != null)

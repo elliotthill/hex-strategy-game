@@ -66,7 +66,7 @@ namespace HexStrategy
             Map map = new Map();
             Core.map = map;
 
-            Core.userFaction = Core.factions[5];
+            Core.userFaction = Core.factions[25];
             Core.camera.Focus(Core.userFaction.hexes()[0]);
 
             scenery = new Scenery();
@@ -75,7 +75,7 @@ namespace HexStrategy
             Core.dtShader = dtShader;
             Render.Initialize();
 
-            UserInterface.LoadElements();
+            UserInterface.Load();
         }
 
         protected override void Update(GameTime gameTime)

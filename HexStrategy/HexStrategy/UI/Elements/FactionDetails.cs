@@ -28,10 +28,6 @@ namespace HexStrategy
         }
 
 
-
-
-
-
         public void Update(GameTime gameTime)
         {
             if (Core.userFaction != null)

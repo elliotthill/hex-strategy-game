@@ -21,7 +21,7 @@ namespace HexStrategy
 		public static int textSpacing = 15;
 		public static int textMargin = 10;
 
-		public static void LoadElements()
+		public static void Load()
 		{
 			hexDetails = new HexDetails();
             armyDetails = new ArmyDetails();

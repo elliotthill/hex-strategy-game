@@ -35,7 +35,7 @@ namespace HexStrategy
             foreach (Hex hex in faction.hexes())
             {
 
-                List<Hex> surroundingHexes = Core.map.getSurroundingHexes(hex);
+                List<Hex> surroundingHexes = Core.map.GetNeighbours(hex);
 
                 foreach (Hex surroundingHex in surroundingHexes)
                 {

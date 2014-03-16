@@ -166,6 +166,20 @@ namespace HexStrategy
                 sb.DrawString (font, this.name, new Vector2 ((int)(location.X - (int)length.X/2), (int)location.Y), UserInterface.fontColor);
 			}
 		}
+
+        public float GetMovementCost()
+        {
+            float cost = 1f;
+
+            if (terrainType == TerrainType.Ice)
+                cost += 0.3f;
+            if (terrainType == TerrainType.Snow)
+                cost += 0.1f;
+            if (terrainType == TerrainType.Desert)
+                cost += 0.3f;
+
+            return cost;
+        }
 	}
 }
 

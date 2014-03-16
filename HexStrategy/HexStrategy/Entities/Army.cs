@@ -12,6 +12,9 @@ namespace HexStrategy
 
 		private Hex hex;
         private Hex hexMovingTo;
+
+        private Hex currentWaypoint;
+        private List<Hex> waypoints;
         private Vector3 position;
 
         private Faction owner;
@@ -35,28 +38,56 @@ namespace HexStrategy
 
 		public void Move(Hex hex)
 		{
+            
+
+            waypoints = Core.map.GetWaypath(this.hex, hex);
+
+            //Path finding algo could not generate a path
+            if (waypoints.Count() == 0)
+                return;
+
             //Face direction of new tile
             this.rotation = Core.Maths.GetRotationFromVec3(this.position, hex.position);
 
-
             hexMovingTo = hex;
+            currentWaypoint = waypoints[1];
+
+
 		}
+
+
 
         //Need proper waypathing
         private void TweenToNewLocation(GameTime gameTime)
         {
-            Vector3 normal = hexMovingTo.position - position;
+            Vector3 normal = currentWaypoint.position - position;
             normal.Normalize();
 
             position += normal * (float)gameTime.ElapsedGameTime.TotalSeconds * Clock.timeCompression;
 
-            if (Vector3.Distance(hexMovingTo.position, this.position) < 1f)
+            if (Vector3.Distance(currentWaypoint.position, position) < 0.2f)
             {
-                //Finish travelling
-                this.hex = this.hexMovingTo;
-                this.position = this.hex.position;
-                this.hexMovingTo = null;
+                //If we have reached our destination
+                if (waypoints.Count() == waypoints.IndexOf(currentWaypoint) + 1)
+                {
+                    //Were there!
+                    this.position = hexMovingTo.position;
+                    hex = hexMovingTo;
+                    hexMovingTo = null;
+                    waypoints.Clear();
+                    currentWaypoint = null;
+                }
+                else
+                {
+                    //Else keep on moving
+                    currentWaypoint = waypoints[waypoints.IndexOf(currentWaypoint) + 1];
+                    this.hex = currentWaypoint;
+                }
+
+                
+                
             }
+
 
         }
 
