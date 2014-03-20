@@ -30,14 +30,16 @@ namespace HexStrategy
 
         static EffectParameter colorMapTextureParameter;
 
+        static EffectParameter opacityParameter;
+
         //Global world matrix
         static Matrix world = Matrix.Identity;
 
         public static void Initialize()
         {
+            
             effect = Shaders.instanceShader;
-
-
+            //Bind params
             viewParameter = effect.Parameters["View"];
             projectionParameter = effect.Parameters["Projection"];
 
@@ -47,7 +49,7 @@ namespace HexStrategy
             diffuseIntensityParameter = effect.Parameters["DiffuseIntensity"];
             lightDirectionParameter = effect.Parameters["DiffuseDirection"];
 
-
+            opacityParameter = effect.Parameters["opacity"];
             colorMapTextureParameter = effect.Parameters["ColorMap"];
         }
 
@@ -56,7 +58,7 @@ namespace HexStrategy
             world = newWorld;
         }
 
-        public static void DrawInstances(List<Hex> hexes, Model model, Texture2D texture)
+        public static void DrawInstances(List<Hex> hexes, Model model, Texture2D texture, float opacity = 1f, Boolean useFactionColor = false)
         {
 
             if (hexes.Count() < 1)
@@ -66,14 +68,24 @@ namespace HexStrategy
 
             for (int i = 0; i < hexes.Count(); i++)
             {
+
                 if (hexes[i] == Core.map.selectedHex)
                 {
 
                     data[i] = new InstanceDataVertex(world * hexes[i].world, Color.LightGray);
                 }
                 else
-                    data[i] = new InstanceDataVertex(world * hexes[i].world, hexes[i].hexData.color);
-
+                {
+                    if (useFactionColor == true)
+                    {
+                        if(hexes[i].isBorder)
+                            data[i] = new InstanceDataVertex(world * hexes[i].world, hexes[i].getOwner().borderColor);
+                        else
+                            data[i] = new InstanceDataVertex(world * hexes[i].world, hexes[i].getOwner().color);
+                    }
+                    else
+                        data[i] = new InstanceDataVertex(world * hexes[i].world, hexes[i].hexData.color);
+                }
                 //If using world matrix override (e.g. for castle model)
                 
 
@@ -121,8 +133,9 @@ namespace HexStrategy
 
                     diffuseIntensityParameter.SetValue(Core.diffuseIntensity);
                     lightDirectionParameter.SetValue(Core.sunDirection);
-
+                    
                     colorMapTextureParameter.SetValue(texture);
+                    opacityParameter.SetValue(opacity);
                     effect.CurrentTechnique = effect.Techniques["HardwareInstanceLow"];
 
                     // Draw all the instance copies in a single call.

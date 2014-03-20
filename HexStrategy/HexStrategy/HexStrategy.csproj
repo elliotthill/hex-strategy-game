@@ -122,6 +122,8 @@
     <Compile Include="Entities\Hex.cs" />
     <Compile Include="Entities\HexData.cs" />
     <Compile Include="Entities\Map.cs" />
+    <Compile Include="Persistence\PersistentStorage.cs" />
+    <Compile Include="Persistence\WorldData.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Game1.cs" />
@@ -133,7 +135,10 @@
     <Compile Include="UI\Elements\ArmyDetails.cs" />
     <Compile Include="UI\Elements\FactionDetails.cs" />
     <Compile Include="UI\Elements\HexDetails.cs" />
+    <Compile Include="UI\Logger.cs" />
+    <Compile Include="UI\PrettyText.cs" />
     <Compile Include="UI\UserInterface.cs" />
+    <Compile Include="UI\Utility\Border.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Game.ico" />

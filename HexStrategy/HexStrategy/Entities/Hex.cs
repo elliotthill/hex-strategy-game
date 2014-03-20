@@ -16,15 +16,25 @@ namespace HexStrategy
     public class Hex
 	{
 		public Vector3 position;
+        public Vector2 position2D;
 
         public Matrix world = Matrix.Identity;
-
+        public BoundingSphere bsphere;
 		public HexData hexData;
+        public Boolean isBorder = false;
+        public int index;
 
 		public Boolean odd = false;
 
         private List<Hex> surroundingHexes;
-		public Faction owner;
+		private Faction owner;
+
+        public CullState cullState = CullState.Unkown;
+
+        //Serial constructor
+        public Hex()
+        {
+        }
 
 		public Hex(Vector3 position, Vector3 clr, float longtitude)
 		{
@@ -40,19 +50,30 @@ namespace HexStrategy
 			if (hexData.buildingType == BuildingType.Castle)
 			{
 				Faction faction = new Faction (Core.RandomFactionName (), Core.RandomColorAsVector (),this, true);
-				faction.AnnexHex (this);
+				
 
 				Core.factions.Add(faction);
 			}
-
+            bsphere = new BoundingSphere(position, 1f);
+            position2D = new Vector2(position.X, position.Z);
 		}
+
 
 		public void DrawLabels(SpriteBatch sb)
 		{
-			if (Core.camera.GetHexCullState (this) == CullState.Close)
 			    this.hexData.DrawLabels(sb, position);
 
 		}
+
+        public Faction getOwner()
+        {
+            return this.owner;
+        }
+
+        public void setOwner(Faction faction)
+        {
+            this.owner = faction;
+        }
 
         public void SetSurroundingHexes(List<Hex> hexes)
         {
@@ -66,6 +87,15 @@ namespace HexStrategy
         public List<Hex> GetSurroundingHexes()
         {
             return this.surroundingHexes;
+        }
+
+        public Boolean IsNotWater()
+        {
+            if (this.hexData.terrainType == TerrainType.Water ||
+                this.hexData.terrainType == TerrainType.ShallowWater)
+                return false;
+
+            return true;
         }
 	}
 }

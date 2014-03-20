@@ -12,15 +12,17 @@ namespace HexStrategy
 	public class Camera
 	{
 		private float aspectRatio, rotationY = 0.0f;
-		private Vector3 up, right, forward, lookAt;
+		private Vector3 up, right, forward, lookNormal;
+        private Vector2 lookAt2D;
+        public BoundingFrustum frustum;
 
 		public Vector3 position = new Vector3(0,30,0);
+        public Vector3 lookAt;
 		public Matrix view, projection, rotation;
 
 		public float closeDistance = 2200f;
-        public float farDistance = 24000f;
+        public float farDistance = 7000f;
 
-		private Vector3 lookNormal;
 
 		public Camera(float aspect)
 		{
@@ -30,7 +32,7 @@ namespace HexStrategy
 
 		public void Update(GameTime gameTime)
 		{
-
+            farDistance = position.Y *140f;
 			lookAt = new Vector3(0,0,30);
 
 			rotation = Matrix.CreateRotationY(rotationY);
@@ -40,15 +42,18 @@ namespace HexStrategy
 			view = Matrix.CreateLookAt (position, lookAt, Vector3.Up);
 			projection = Matrix.CreatePerspectiveFieldOfView (MathHelper.ToRadians (55f), aspectRatio, 2f, 2000f);
 
+            frustum = new BoundingFrustum(view * projection);
 			//Look normal for culling
 			lookNormal = position - lookAt;
 			lookNormal.Normalize();
 
-			UpdateMouse(gameTime);
+			UserInput(gameTime);
+
+            lookAt2D = new Vector2(lookAt.X, lookAt.Z);
 
 		}
 
-		private void UpdateMouse(GameTime gameTime)
+		private void UserInput(GameTime gameTime)
 		{
 			up =  Vector3.Transform (new Vector3(0, 1, 0),rotation);
 			right =  Vector3.Transform (new Vector3(-1, 0, 0),rotation);
@@ -84,12 +89,19 @@ namespace HexStrategy
 
 			position = new Vector3(position.X, position.Y + (scrollWheelDelta/100)*Core.scrollSpeed, position.Z);
 
+            /*
+             * Debug
+             */
+            if (Core.keyboardState.IsKeyDown(Keys.OemPlus))
+            {
+                this.farDistance += (float)gameTime.ElapsedGameTime.TotalSeconds * 2000f;
+            }
+            else if (Core.keyboardState.IsKeyDown(Keys.OemMinus))
+            {
+                this.farDistance -= (float)gameTime.ElapsedGameTime.TotalSeconds * 2000f;
+            }
 		}
 
-		private void UpdateKeyboard(GameTime gameTime)
-		{
-
-		}
 
 		public void Focus(Hex hex)
 		{
@@ -99,8 +111,15 @@ namespace HexStrategy
 		//Neccessary premature optimization
 		public CullState GetHexCullState(Hex hex)
 		{
+            //Frustum method is slow as hell
+            /*if (frustum.Intersects(hex.bsphere))
+                return CullState.Close;
 
-            float Distance = Vector3.DistanceSquared(this.lookAt, hex.position);
+            return CullState.Culled;*/
+            //END
+
+
+            float Distance = Vector2.DistanceSquared(this.lookAt2D, hex.position2D);
 			//Otherwise recalculate
 			if ( Distance > farDistance) {
 				return CullState.Culled;
@@ -112,7 +131,7 @@ namespace HexStrategy
 				hexNormal.Normalize();
 
 				float theta = Vector3.Dot (hexNormal, this.lookNormal);
-				if (theta > (-0.62f))
+				if (theta > (-0.7f))
 					return CullState.Culled;
 			}
 
@@ -136,7 +155,7 @@ namespace HexStrategy
 				hexNormal.Normalize();
 
 				float theta = Vector3.Dot (hexNormal, this.lookNormal);
-				if (theta > (-0.62f))
+				if (theta > (-0.70f))
 					return false;
 			}
 

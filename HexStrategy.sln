@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2012
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HexStrategy", "HexStrategy\HexStrategy\HexStrategy.csproj", "{7F5D299D-05FD-4559-A25B-D6547A77A743}"
 EndProject
-Project("{96E2B04D-8817-42C6-938A-82C39BA4D311}") = "HexStrategyContent", "HexStrategy\HexStrategyContent\HexStrategyContent.contentproj", "{72FDEC82-B697-459F-9221-1F48212258F5}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HexStrategyContent", "HexStrategy\HexStrategyContent\HexStrategyContent.contentproj", "{72FDEC82-B697-459F-9221-1F48212258F5}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InstancedModelPipeline", "HexStrategy\InstancedModelPipeline\InstancedModelPipeline.csproj", "{FF69FD90-8834-4F60-ADA5-36387F112437}"
 EndProject
@@ -26,5 +26,8 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(Performance) = preSolution
+		HasPerformanceSessions = true
 	EndGlobalSection
 EndGlobal

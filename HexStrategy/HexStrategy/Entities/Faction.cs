@@ -7,34 +7,107 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace HexStrategy
 {
+
 	public class Faction
 	{
 		public String name;
-		public Vector3 color;
+		public Vector3 colorVec;
+        public Color color, borderColor;
 
         public float treasury = 1f;
 
-		private List<Hex> hexList = new List<Hex> ();
-		public List<Army> armyList = new List<Army> ();
+		private List<Hex> hexList = new List<Hex>();
+        public List<int> hexListIndicies;
+
+        private List<Hex> borders = new List<Hex>();
+        private List<Hex> visible = new List<Hex>();
+
+		public List<Army> armyList = new List<Army>();
 
         private List<Hex> addHex = new List<Hex>();
         private AIController aiController;
 
+        //Serial constructor
+        public Faction()
+        {
+        }
+
+        public void ResetAI()
+        {
+            aiController = new AIController(this);
+        }
+        /// <summary>
+        /// This is the defacto post-serial constructor, all other game objects at this point have
+        /// correct values from file loading. Now we must reconstruct references etc.
+        /// </summary>
+        public void Reconstruct()
+        {
+            
+            //Reconstruct hex references from indicies
+            foreach (int x in hexListIndicies)
+            {
+                hexList.Add(Core.map.hexList[x]);
+                Core.map.hexList[x].setOwner(this);
+            }
+
+            foreach (Army army in armyList)
+                army.SetOwner(this);
+
+            //Reconstruct hexList from indicies - use proxy obj
+            if (Core.userFaction != this)
+                aiController = new AIController(this);
+
+
+            CalculateBorders();
+        }
+
+        /// <summary>
+        /// Deconstruct faction for serialization. All references need to be converted to indicies
+        /// in reference to the original list, probably contained in Core or Map.
+        /// </summary>
+        public void Deconstruct()
+        {
+            hexListIndicies = new List<int>();
+            foreach (Hex hex in hexList)
+                hexListIndicies.Add(Core.map.hexList.IndexOf(hex));
+
+        }
+
 		public Faction (String name, Vector3 color, Hex hex, Boolean AI)
 		{
 			this.name = name;
-			this.color = color;
+			this.colorVec = color;
 
 			armyList.Add (new Army (hex, this));
-
+            hexList.Add(hex);
+            hex.setOwner(this);
+            borders.Add(hex);
             if (AI)
                 aiController = new AIController(this);
+
+            this.color = new Color(colorVec.X, colorVec.Y, colorVec.Y);
+            this.borderColor = new Color(colorVec.X/2f, colorVec.Y/2f, colorVec.Z/2f);
 		}
 
-		public List<Hex> hexes()
+		public List<Hex> GetOwned()
 		{
 			return hexList;
 		}
+        public List<Hex> GetBorders()
+        {
+            return this.borders;
+        }
+        public List<Hex> GetVisible()
+        {
+            visible.Clear();
+            foreach (Hex hex in hexList)
+            {
+                if (hex.cullState != CullState.Culled)
+                    visible.Add(hex);
+            }
+
+            return visible;
+        }
 
 		public void AnnexHex(Hex hex)
 		{
@@ -42,12 +115,12 @@ namespace HexStrategy
 			if (hexList.Contains (hex))
 				return;
 
-			if (hex.owner != null)
-			    hex.owner.CedeHex (hex);
+			if (hex.getOwner() != null)
+			    hex.getOwner().CedeHex (hex);
 
 			hexList.Add (hex);
-			hex.owner = this;
-
+			hex.setOwner(this);
+            CalculateBorders();
 		}
 
 		public void CedeHex(Hex hex)
@@ -58,8 +131,37 @@ namespace HexStrategy
 
 
 			this.hexList.Remove (hex);
-			hex.owner = null;
+			hex.setOwner(null);
+            CalculateBorders();
 		}
+
+        private void CalculateBorders()
+        {
+            //We are initialising
+            if (Core.map == null)
+                return;
+
+            borders.Clear();
+
+            foreach (Hex hex in hexList)
+            {
+                hex.isBorder = false;
+                foreach (Hex borderHex in Core.map.FindNeighbours(hex))
+                {
+                    if (borderHex.getOwner() == null || borderHex.getOwner() != this)
+                    {
+
+                        if (!borders.Contains(hex))
+                        {
+                            borders.Add(hex);
+                            hex.isBorder = true;
+                        }
+                            
+                        
+                    }
+                }
+            }
+        }
 
         public void DrawArmies()
         {
@@ -71,11 +173,17 @@ namespace HexStrategy
 
 		public void DrawOwnershipFilter()
 		{
+            
 			//Draws ownership filter
 			foreach (Hex hex in hexList) {
 
 				if (Core.camera.GetHexCullState (hex) == CullState.Culled)
 					continue;
+
+                Vector3 clr = this.colorVec;
+
+                if (borders.Contains(hex))
+                    clr = new Vector3(colorVec.X - 155f, colorVec.Y - 155f, colorVec.Z - 155f);
 
 				// Copy any parent transforms.
                 Matrix[] transforms = new Matrix[Meshes.hexTop.Bones.Count];
@@ -87,10 +195,10 @@ namespace HexStrategy
 					foreach (BasicEffect effect in mesh.Effects)
 					{
 						effect.EnableDefaultLighting();
-						effect.AmbientLightColor = color;
+						effect.AmbientLightColor = colorVec;
 						effect.DirectionalLight0.Enabled = true;
 						effect.DirectionalLight0.Direction = Core.sunDirection;
-						effect.DirectionalLight0.DiffuseColor = color;
+						effect.DirectionalLight0.DiffuseColor = clr;
 						effect.DirectionalLight1.Enabled = false;
 						effect.DirectionalLight2.Enabled = false;
 						effect.World = Matrix.CreateScale(1f)
@@ -107,26 +215,27 @@ namespace HexStrategy
 			}
 		}
 
+        public void Draw2D(SpriteBatch sb)
+        {
+            foreach (Army army in armyList)
+                army.Draw2D(sb);
+        }
+
         public void Update(GameTime gameTime)
         {
             foreach (Army army in armyList)
                 army.Update(gameTime);
         }
 
-        public void UpdateDaily()
+        public void DayTick()
         {
             CollectTaxes();
 
             if (this != Core.userFaction)
             {
-                aiController.UpdateDaily();
+                aiController.DayTick();
             }
 
-
-            /*
-            //Annex tiles around capital
-
-            */
         }
 
         private void CollectTaxes()

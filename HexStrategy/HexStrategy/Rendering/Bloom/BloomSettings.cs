@@ -71,7 +71,7 @@ namespace HexStrategy
 		public static BloomSettings[] PresetSettings =
 		{
 			//                Name           Thresh  Blur Bloom  Base  BloomSat BaseSat
-			new BloomSettings("Emergent",    0.2f,   0.8f,   0.3f,    1,    0.55f,       0.7f),
+			new BloomSettings("Emergent",    0.2f,   0.8f,   0.3f,    1,    0.65f,       0.7f),
 			new BloomSettings("Default",     0.25f,  4,   1.25f, 1,    1,       1),
 			new BloomSettings("Soft",        0,      3,   1,     1,    1,       1),
 			new BloomSettings("Desaturated", 0.5f,   8,   2,     1,    0,       1),

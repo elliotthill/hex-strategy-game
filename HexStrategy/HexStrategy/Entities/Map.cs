@@ -10,7 +10,7 @@ namespace HexStrategy
 	public class Map
 	{
 		int width, height;
-		List<Hex> hexList = new List<Hex> ();
+		public List<Hex> hexList = new List<Hex> ();
         
         #region sublists
         List<Hex> visibleHex = new List<Hex>();
@@ -39,7 +39,6 @@ namespace HexStrategy
 
 		public Hex selectedHex;
         public Army selectedArmy;
-		public List<Hex> highlightedHex = new List<Hex>();
 
 		Vector3[,] heightData;
 
@@ -78,6 +77,8 @@ namespace HexStrategy
 
 		private void HeightDataToMap()
 		{
+            int index = 0;
+
 			for(int i = 0; i < width; i++)
 			{
 				for (int z = 0; z < height; z++)
@@ -90,12 +91,25 @@ namespace HexStrategy
 						hex.position += new Vector3 (oddRowOffset, 0, 0);
 						hex.odd = true;
 					}
-
-					hexList.Add(hex);
+                    hex.index = index;
+                    hexList.Insert(index, hex);
+                    index++;
+					
 				}
 			}
+
+            heightData = null;
+            Textures.heightMap = null;
 		}
 
+        public void LoadFromWorldData(List<Hex> hexes)
+        {
+            this.hexList = hexes;
+            this.selectedHex = null;
+            this.selectedArmy = null;
+           
+            
+        }
 		public void Update(GameTime gameTime)
 		{
 			UpdateMouse (gameTime);
@@ -194,101 +208,134 @@ namespace HexStrategy
 
             foreach (Hex hex in hexList)
             {
-                if (Core.camera.GetHexCullState(hex) != CullState.Culled)
+                hex.cullState = Core.camera.GetHexCullState(hex);
+
+                if (hex.cullState != CullState.Culled)
                     visibleHex.Add(hex);
             }
+            //IF camera really zoomed out only draw faction filter
 
-            /* Sort those visible hexes into sublists for batch rendering */
-            plainHex.Clear();
-            desertHex.Clear();
-            dryPlainHex.Clear();
-            waterHex.Clear();
-            shallowWaterHex.Clear();
-            mountainHex.Clear();
-            forestHex.Clear();
-            coldPlainHex.Clear();
-            snowHex.Clear();
-            iceHex.Clear();
-            savannaHex.Clear();
-            rainforestHex.Clear();
-            steppeHex.Clear();
-            castleHex.Clear();
-
-            /* Sort each visible hex into appropriate sublist */
-            foreach (Hex hex in visibleHex)
+            if (Core.camera.position.Y < 100f)
             {
-                if (hex.hexData.terrainType == TerrainType.Plains)
-                    plainHex.Add(hex);
-                else if (hex.hexData.terrainType == TerrainType.Desert)
-                    desertHex.Add(hex);
-                else if (hex.hexData.terrainType == TerrainType.DryPlains)
-                    dryPlainHex.Add(hex);
-                else if (hex.hexData.terrainType == TerrainType.Water)
-                    waterHex.Add(hex);
-                else if (hex.hexData.terrainType == TerrainType.Mountain)
-                    mountainHex.Add(hex);
-                else if (hex.hexData.terrainType == TerrainType.ShallowWater)
-                    shallowWaterHex.Add(hex);
-                else if (hex.hexData.terrainType == TerrainType.Forest)
-                    forestHex.Add(hex);
-                else if (hex.hexData.terrainType == TerrainType.ColdPlains)
-                    coldPlainHex.Add(hex);
-                else if (hex.hexData.terrainType == TerrainType.Snow)
-                    snowHex.Add(hex);
-                else if (hex.hexData.terrainType == TerrainType.Ice)
-                    iceHex.Add(hex);
-                else if (hex.hexData.terrainType == TerrainType.Savanna)
-                    savannaHex.Add(hex);
-                else if (hex.hexData.terrainType == TerrainType.Rainforest)
-                    rainforestHex.Add(hex);
-                else if (hex.hexData.terrainType == TerrainType.Steppe)
-                    steppeHex.Add(hex);
+                /* Sort those visible hexes into sublists for batch rendering */
+                plainHex.Clear();
+                desertHex.Clear();
+                dryPlainHex.Clear();
+                waterHex.Clear();
+                shallowWaterHex.Clear();
+                mountainHex.Clear();
+                forestHex.Clear();
+                coldPlainHex.Clear();
+                snowHex.Clear();
+                iceHex.Clear();
+                savannaHex.Clear();
+                rainforestHex.Clear();
+                steppeHex.Clear();
+                castleHex.Clear();
 
-                if (hex.hexData.buildingType == BuildingType.Castle)
-                    castleHex.Add(hex);
-                
+                /* Sort each visible hex into appropriate sublist */
+                foreach (Hex hex in visibleHex)
+                {
+                    if (hex.hexData.terrainType == TerrainType.Plains)
+                        plainHex.Add(hex);
+                    else if (hex.hexData.terrainType == TerrainType.Desert)
+                        desertHex.Add(hex);
+                    else if (hex.hexData.terrainType == TerrainType.DryPlains)
+                        dryPlainHex.Add(hex);
+                    else if (hex.hexData.terrainType == TerrainType.Water)
+                        waterHex.Add(hex);
+                    else if (hex.hexData.terrainType == TerrainType.Mountain)
+                        mountainHex.Add(hex);
+                    else if (hex.hexData.terrainType == TerrainType.ShallowWater)
+                        shallowWaterHex.Add(hex);
+                    else if (hex.hexData.terrainType == TerrainType.Forest)
+                        forestHex.Add(hex);
+                    else if (hex.hexData.terrainType == TerrainType.ColdPlains)
+                        coldPlainHex.Add(hex);
+                    else if (hex.hexData.terrainType == TerrainType.Snow)
+                        snowHex.Add(hex);
+                    else if (hex.hexData.terrainType == TerrainType.Ice)
+                        iceHex.Add(hex);
+                    else if (hex.hexData.terrainType == TerrainType.Savanna)
+                        savannaHex.Add(hex);
+                    else if (hex.hexData.terrainType == TerrainType.Rainforest)
+                        rainforestHex.Add(hex);
+                    else if (hex.hexData.terrainType == TerrainType.Steppe)
+                        steppeHex.Add(hex);
+
+                    if (hex.hexData.buildingType == BuildingType.Castle)
+                        castleHex.Add(hex);
+
+                }
+
+                Model hexModel = Meshes.hexTopInstanced;
+
+                /* Batch draw each sublist */
+                Render.DrawInstances(plainHex, hexModel, Textures.green);
+                Render.DrawInstances(desertHex, hexModel, Textures.yellow);
+                Render.DrawInstances(dryPlainHex, hexModel, Textures.lightGreen);
+                Render.DrawInstances(waterHex, hexModel, Textures.blue);
+                Render.DrawInstances(shallowWaterHex, hexModel, Textures.blue);
+                Render.DrawInstances(mountainHex, hexModel, Textures.tree);
+                Render.DrawInstances(forestHex, hexModel, Textures.tree);
+                Render.DrawInstances(coldPlainHex, hexModel, Textures.snow);
+                Render.DrawInstances(iceHex, hexModel, Textures.white);
+                Render.DrawInstances(snowHex, hexModel, Textures.white);
+                Render.DrawInstances(savannaHex, hexModel, Textures.lightGreen);
+                Render.DrawInstances(rainforestHex, hexModel, Textures.tree);
+                Render.DrawInstances(steppeHex, hexModel, Textures.DarkBrown);
+
+                /* Draw mountains, trees and castles */
+                Render.DrawInstances(mountainHex, Meshes.mountain, Textures.DarkBrown);
+                Render.DrawInstances(forestHex, Meshes.tree, Textures.green, 0.75f);
+                Render.DrawInstances(rainforestHex, Meshes.tree, Textures.DarkGreen);
+
+                Render.setWorld(Matrix.CreateScale(0.00065f) * Matrix.CreateTranslation(new Vector3(0f, 0.65f, 0.3f)));
+                Render.DrawInstances(castleHex, Meshes.castle, Textures.darkGrey);
+                Render.setWorld(Matrix.Identity);
+
+                /*
+                 * Draw faction ownership tiles
+                 */
+                foreach (Faction faction in Core.factions)
+                {
+                    Render.DrawInstances(faction.GetVisible(), Meshes.hexTopInstanced, Textures.white, 0.3f, true);
+                }
+            }
+            else
+            {
+                /*
+                 * Draw faction ownership tiles
+                 */
+                foreach (Faction faction in Core.factions)
+                {
+                    Render.DrawInstances(faction.GetVisible(), Meshes.hexTopInstanced, Textures.white, 1f, true);
+                }
             }
 
-            Model hexModel = Meshes.hexTopInstanced;
 
-            /* Batch draw each sublist */
-            Render.DrawInstances(plainHex, hexModel, Textures.green);
-            Render.DrawInstances(desertHex, hexModel, Textures.yellow);
-            Render.DrawInstances(dryPlainHex, hexModel, Textures.lightGreen);
-            Render.DrawInstances(waterHex, hexModel, Textures.blue);
-            Render.DrawInstances(shallowWaterHex, hexModel, Textures.lightBlue);
-            Render.DrawInstances(mountainHex, hexModel, Textures.tree);
-            Render.DrawInstances(forestHex, hexModel, Textures.tree);
-            Render.DrawInstances(coldPlainHex, hexModel, Textures.snow);
-            Render.DrawInstances(iceHex, hexModel, Textures.white);
-            Render.DrawInstances(snowHex, hexModel, Textures.white);
-            Render.DrawInstances(savannaHex, hexModel, Textures.lightGreen);
-            Render.DrawInstances(rainforestHex, hexModel, Textures.tree);
-            Render.DrawInstances(steppeHex, hexModel, Textures.DarkBrown);
-
-            /* Draw mountains, trees and castles */
-            Render.DrawInstances(mountainHex, Meshes.mountain, Textures.DarkBrown);
-            Render.DrawInstances(forestHex, Meshes.tree, Textures.green);
-            Render.DrawInstances(rainforestHex, Meshes.tree, Textures.DarkGreen);
-
-            Render.setWorld(Matrix.CreateScale(0.00065f) * Matrix.CreateTranslation(new Vector3(0f, 0.65f, 0.3f)));
-            Render.DrawInstances(castleHex, Meshes.castle, Textures.grey);
-            Render.setWorld(Matrix.Identity);
 		}
 
 		public void Draw2D(SpriteBatch sb)
 		{
 
-			foreach (Hex hex in hexList)
+			foreach (Hex hex in visibleHex)
 			{
 				hex.DrawLabels(sb);
 			}
 		}
 
-        public List<Hex> GetWaypath(Hex source, Hex dest)
+        /// <summary>
+        /// Crude pathfinding function TODO: use proper A* pathfinding technique :- keeping a sorted priority queue of alternate path segments along the way.
+        /// </summary>
+        /// <param name="source">The tile the army is standing on</param>
+        /// <param name="dest">The tile you want it to move to</param>
+        /// <returns></returns>
+        public List<Hex> FindPath(Hex source, Hex dest)
         {
             List<Hex> waypath = new List<Hex>();
             waypath.Add(source);
+
             List<Hex> checkedPaths = new List<Hex>();
             Hex current = source;
 
@@ -303,7 +350,7 @@ namespace HexStrategy
                 Hex shortestDistanceHex = null;
 
 
-                foreach (Hex hex in this.GetNeighbours(current))
+                foreach (Hex hex in this.FindNeighbours(current))
                 {
                     
                     //Disallow certain terrain
@@ -349,13 +396,19 @@ namespace HexStrategy
                 }
                 else
                 {
+                    if ((waypath.Count() - 1) < 1)
+                        return new List<Hex>();
+
                     //Cant find a route, roll back a waypoint and try a different tile
                     Hex lastTile = waypath[waypath.Count() - 1];
                     current = lastTile;
                     waypath.Remove(lastTile);
                     
                 }
-               
+
+                //Short it if its going crazy
+                if (checkedPaths.Count() > 500)
+                    return new List<Hex>();
 
                 if (shortestDistanceHex == dest)
                     done = true;
@@ -366,18 +419,18 @@ namespace HexStrategy
         }
 
         /// <summary>
-        /// This method is incredibly slow, not sure why
+        /// Uses caching but is incredibly slow when run first time - UPDATE indexOf is the hot line
         /// </summary>
-        /// <param name="hex"></param>
+        /// <param name="hex">The tile you wish to get the neighbours of</param>
         /// <returns></returns>
-		public List<Hex> GetNeighbours(Hex hex)
+		public List<Hex> FindNeighbours(Hex hex)
 		{
             //Is it cached?
             if (hex.GetSurroundingHexes() != null)
                 return hex.GetSurroundingHexes();
 
 			//Get index of hex, and make new list to store surrounding hex
-			int index = hexList.IndexOf(hex);
+            int index = hex.index;
 			List<Hex> surroundingHexes = new List<Hex>();
 
             int count = hexList.Count();

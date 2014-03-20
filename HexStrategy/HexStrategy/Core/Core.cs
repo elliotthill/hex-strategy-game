@@ -22,9 +22,9 @@ namespace HexStrategy
 
 		public static int screenX = 1440;
 		public static int screenY = 900;
-		public static float contrast = 1.6f;
+		public static float contrast = 1.3f;
 
-		public static Vector4 ambientLight = new Vector4(1f, 1f, 1f, 1f);
+        public static Vector4 ambientLight = new Vector4(1f, 1f, 1f, 1f);
         public static Vector3 ambientLight3 = new Vector3(1f, 1f, 1f);
 
 		public static Vector3 sunDirection = new Vector3(0.2f, -1f, 0.2f);
@@ -32,7 +32,7 @@ namespace HexStrategy
         public static Vector3 sunDiffuse3 = new Vector3(1f, 0.75f, 0.65f);
 
 		public static float ambientIntensity = 0.6f;
-		public static float diffuseIntensity = 1.4f;
+		public static float diffuseIntensity = 1.8f;
 
 
 		public static Boolean leftClickLastFrame = false;
@@ -42,13 +42,80 @@ namespace HexStrategy
 
 		public static Map map;
 
-
 		public static DTShader dtShader;
 
 		public static Random random = new Random();
 
 		public static List<Faction> factions = new List<Faction> ();
 		public static Faction userFaction;
+
+        /// <summary>
+        /// Loads a new game from storage
+        /// </summary>
+        public static void Load()
+        {
+            Core.map.hexList.Clear();
+            Core.factions.Clear();
+
+            PersistentStorage ps = new PersistentStorage();
+            ps.InitiateLoad();
+            
+        }
+
+        /// <summary>
+        /// Saves the game
+        /// </summary>
+        public static void Save()
+        {
+            PersistentStorage pw = new PersistentStorage();
+            pw.InitiateSave();
+        }
+        public static void LoadFrom(WorldData worldData)
+        {
+
+            Logger.AddMessage("Loaded Factions " + worldData.faction.Count);
+            Logger.AddMessage("Loaded hexes " + worldData.hexList.Count);
+            map.LoadFromWorldData(worldData.hexList);
+            factions = worldData.faction;
+
+            //userFaction = factions[worldData.userFactionIndex];
+            userFaction = factions[5];
+        }
+
+        public static void Reconstruct()
+        {
+            Logger.AddMessage("Constructed Factions " + factions.Count);
+            Logger.AddMessage("Constructed hexes " + Core.map.hexList.Count);
+            foreach (Faction faction in factions)
+            {
+                faction.Reconstruct();
+            }
+
+            foreach (Faction faction in factions)
+            {
+                foreach (Army army in faction.armyList)
+                    army.Reconstruct();
+            }
+
+            foreach (Faction faction in factions)
+            {
+                faction.ResetAI();
+            }
+        }
+
+        public static void Deconstruct()
+        {
+
+
+            foreach (Faction faction in factions)
+            {
+                faction.Deconstruct();
+                foreach (Army army in faction.armyList)
+                    army.Deconstruct();
+            }
+
+
+        }
 
 		public static void BeginUpdate(GameTime gameTime)
 		{
@@ -73,6 +140,16 @@ namespace HexStrategy
 				rightClickLastFrame = true;
 			else
 				rightClickLastFrame = false;
+
+            if (keyboardState.IsKeyUp(Keys.O) && oldKeyboardState.IsKeyDown(Keys.O))
+            {
+                Core.Save();
+            }
+
+            if (keyboardState.IsKeyUp(Keys.P) && oldKeyboardState.IsKeyDown(Keys.P))
+            {
+                Core.Load();
+            }
 		}
 
 		public static void FinishUpdate(GameTime gameTime)
@@ -106,43 +183,34 @@ namespace HexStrategy
 
 			case 1:
 				return "Mongols";
-				break;
 
 			case 2:
 				return "Vandals";
-				break;
 
 			case 3:
 				return "Aztecs";
-				break;
 
 			case 4:
 				return "Mayans";
-				break;
 
 			case 5:
 				return "Turks";
-				break;
 
 			case 6:
 				return "Romans";
-				break;
 
 			case 7:
 				return "Greeks";
-				break;
 
 			case 8:
 				return "Goths";
 
-				break;
 			case 9:
 				return "Gauls";
-				break;
 
 			case 10:
 				return "Natives";
-				break;
+
 			}
 
 			return "Error";
@@ -157,43 +225,37 @@ namespace HexStrategy
 
                 case 1:
                     return "Constantinople";
-                    break;
 
                 case 2:
                     return "Rome";
-                    break;
+
 
                 case 3:
                     return "Cairo";
-                    break;
+
 
                 case 4:
                     return "Beijing";
-                    break;
+
 
                 case 5:
                     return "London";
-                    break;
+
 
                 case 6:
                     return "Paris";
-                    break;
+
 
                 case 7:
                     return "Tokyo";
-                    break;
 
                 case 8:
                     return "Madrid";
-
-                    break;
                 case 9:
                     return "Moscow";
-                    break;
 
                 case 10:
                     return "Lisbon";
-                    break;
             }
 
             return "Error";
@@ -302,16 +364,19 @@ namespace HexStrategy
 
                 return GetRotation(normal);
             }
+
             public static float UnsignedAngleBetweenTwoV3(Vector3 first, Vector3 second)
             {
                 first.Normalize(); second.Normalize();
                 double Angle = (float)Math.Acos(Vector3.Dot(first, second));
                 return (float)Angle;
             }
+
             public static String DisplayDecimalAsPercentage(float decmial)
             {
                 return Math.Round(decmial * 100, 0) + "%";
             }
+
             public static String DisplayDecimalAsPercentageIncrease(float decmial, int digits)
             {
                 String thing = "";
@@ -322,10 +387,12 @@ namespace HexStrategy
 
                 return thing;
             }
+
             public static String DisplayDecimalAsFloatingPercentage(float decmial, int digits)
             {
                 return Math.Round(decmial * 100, digits) + "%";
             }
+
         }
 
 

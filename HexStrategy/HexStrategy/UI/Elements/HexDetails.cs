@@ -13,6 +13,7 @@ namespace HexStrategy
 		protected Boolean IsVisible = true;
 		public Rectangle bounds = new Rectangle(0,Core.screenY-300,200,300);
 		public List<Rectangle> buttonBounds = new List<Rectangle>();
+
 		//public Dictionary<Vector2> textBounds = new Dictionary<Vector2>();
 
 		public Dictionary<String, Vector2> textBounds = new Dictionary<String, Vector2>();
@@ -29,11 +30,6 @@ namespace HexStrategy
             textBounds.Add("owner", new Vector2(bounds.X + UserInterface.textMargin, bounds.Y + (UserInterface.textSpacing * 5)));
 		}
 
-
-
-
-
-
 		public void Update(GameTime gameTime)
 		{
             if (Core.map.selectedHex != null)
@@ -43,6 +39,12 @@ namespace HexStrategy
 
             if (!IsVisible)
                 return;
+
+            /*
+             * Handle mouse hovering and clicking
+             */
+
+
 		}
 
 		public void Draw(SpriteBatch sb)
@@ -51,6 +53,7 @@ namespace HexStrategy
                 return;
 
 			sb.Draw (Textures.DarkBrown, bounds, UserInterface.grey);
+            Border.Draw(bounds, sb);
 
 			foreach (Rectangle button in buttonBounds) {
 
@@ -64,8 +67,8 @@ namespace HexStrategy
 				sb.DrawString(Fonts.medium, "Population: " + Core.map.selectedHex.hexData.population.ToString(),textBounds["population"],Color.White);
                 sb.DrawString(Fonts.medium, "Color: " + Core.map.selectedHex.hexData.color.ToString(), textBounds["color"], Color.White);
 
-                if (Core.map.selectedHex.owner != null)
-                sb.DrawString(Fonts.medium, "Owner: " + Core.map.selectedHex.owner.name, textBounds["owner"], Color.White);
+                if (Core.map.selectedHex.getOwner() != null)
+                sb.DrawString(Fonts.medium, "Owner: " + Core.map.selectedHex.getOwner().name, textBounds["owner"], Color.White);
 			}
 		}
 

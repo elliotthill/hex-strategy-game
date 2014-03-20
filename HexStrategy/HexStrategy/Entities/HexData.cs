@@ -49,6 +49,11 @@ namespace HexStrategy
 		public float alpha = 1f;
         public Color color;
 
+        //Serial constructor
+        public HexData()
+        {
+        }
+
 		public HexData(float longtitude, Vector3 x)
 		{
 			this.longtitude = longtitude;
@@ -63,13 +68,13 @@ namespace HexStrategy
 
 			if (blueness > 1.2f) {
 				this.terrainType = TerrainType.Water;
-				this.alpha = (this.alpha / 2) + 0.35f;
+				this.alpha = (this.alpha / 1.3f) + 0.35f;
 
 			} else if (greenness > 1.2f || blueness < 1.1f) {
 
 				if (this.alpha > 0.8f && greenness < 1.1f && yellowness < 1.1f) {
 					this.terrainType = TerrainType.Snow;
-					this.alpha -= 0.6f;
+					this.alpha -= 0.2f;
 				}
 				else if (yellowness > 1.3f && this.alpha > 0.6f) {
 					this.terrainType = TerrainType.Desert;
@@ -89,10 +94,10 @@ namespace HexStrategy
 			} 
 			else {
 				this.terrainType = TerrainType.ShallowWater;
-				this.alpha = (this.alpha / 2) + 0.35f;
+				this.alpha = (this.alpha / 1.3f) + 0.35f;
 			}
 
-
+            /* Algorithm that sets terrain type */
 			if (longtitude < 0.1f || longtitude > 0.9f)
 			{
 				if (this.terrainType == TerrainType.Plains)
@@ -133,15 +138,20 @@ namespace HexStrategy
 			}
 
 
-            if (this.terrainType == TerrainType.Plains && Core.RandomFloat() < 0.1f && Core.RandomFloat() < 0.04f)
+            if (this.terrainType == TerrainType.Plains && Core.RandomFloat() < 0.08f && Core.RandomFloat() < 0.08f)
             {
                 this.buildingType = BuildingType.Castle;
                 this.name = Core.RandomTownName();
             }
 
-            color = new Color(this.alpha, this.alpha, this.alpha);
+            color = new Color((this.alpha / 2) + 0.1f, (this.alpha / 2) + 0.1f,( this.alpha / 2) + 0.1f);
 		}
 
+        /// <summary>
+        /// Draws the town name and details
+        /// </summary>
+        /// <param name="sb"></param>
+        /// <param name="position"></param>
 		public void DrawLabels(SpriteBatch sb, Vector3 position)
 		{
 			if (buildingType == BuildingType.Castle) {
@@ -167,6 +177,30 @@ namespace HexStrategy
 			}
 		}
 
+        /// <summary>
+        /// Used when calculating movement speed over terrain
+        /// </summary>
+        /// <returns></returns>
+        public float GetMovementModifier()
+        {
+            float modifier = 1f;
+
+            if (terrainType == TerrainType.Ice)
+                modifier = 0.3f;
+            if (terrainType == TerrainType.Snow)
+                modifier = 0.1f;
+            if (terrainType == TerrainType.Desert)
+                modifier = 0.3f;
+            if (terrainType == TerrainType.Mountain)
+                modifier = 0.3f;
+
+            return modifier;
+        }
+
+        /// <summary>
+        /// Used in pathfinding
+        /// </summary>
+        /// <returns></returns>
         public float GetMovementCost()
         {
             float cost = 1f;

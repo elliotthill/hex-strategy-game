@@ -15,9 +15,10 @@ namespace HexStrategy
         public static FactionDetails factionDetails;
 
 		public static Color grey = new Color(100,100,100,100);
-        public static Color transparentBlack = new Color(0, 0, 0, 130);
+        public static Color transparentBlack = new Color(0, 0, 0, 150);
+        public static Color transparentWhite = new Color(255, 255, 255, 150);
 		public static Color fontColor = new Color(255,255,255,200);
-
+        public static Color shadow = new Color(20, 20, 20, 100);
 		public static int textSpacing = 15;
 		public static int textMargin = 10;
 
@@ -33,6 +34,7 @@ namespace HexStrategy
 			hexDetails.Update(gameTime);
             armyDetails.Update(gameTime);
             factionDetails.Update(gameTime);
+            
 		}
 
 		public static void Draw(SpriteBatch sb)
@@ -40,6 +42,7 @@ namespace HexStrategy
 			hexDetails.Draw(sb);
             armyDetails.Draw(sb);
             factionDetails.Draw(sb);
+            Logger.Draw(sb);
 		}
 	}
 }

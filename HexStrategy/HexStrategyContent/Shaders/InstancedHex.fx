@@ -9,7 +9,9 @@ float4 AmbientColor;
 float3 DiffuseDirection;
 float4 DiffuseColor;
 float DiffuseIntensity;
-
+float contrast = 1.1f;
+float brightness = -0.01f;
+float opacity = 1.0f;
 
 texture2D ColorMap;
 sampler2D Sampler = sampler_state
@@ -82,7 +84,10 @@ float4 PixelShaderFunctionLow(VertexShaderOutput input) : COLOR0
     float4 norm = float4(input.Normal, 1.0);
     float4 diffuse = saturate(dot(-DiffuseDirection,norm));
  
-    return color*AmbientColor*input.Colour+color*DiffuseIntensity*DiffuseColor*diffuse*input.Colour;
+    float4 clr = color*AmbientColor*input.Colour+color*DiffuseIntensity*DiffuseColor*diffuse*input.Colour;
+	clr =  (clr + brightness) * contrast;
+	clr.a = opacity;
+	return clr;
 }
 
 
@@ -91,6 +96,9 @@ technique HardwareInstanceLow
 {
     pass Pass1
     {
+		AlphaBlendEnable = TRUE;
+        DestBlend = INVSRCALPHA;
+        SrcBlend = SRCALPHA;
         VertexShader = compile vs_3_0 HardwareInstancingVertexShader();
         PixelShader = compile ps_3_0 PixelShaderFunctionLow();
     }

@@ -23,7 +23,7 @@ namespace HexStrategy
 
 
             textBounds.Add("name", new Vector2(bounds.X + UserInterface.textMargin, bounds.Y + (UserInterface.textMargin)));
-            textBounds.Add("money", new Vector2(bounds.X + (float)Fonts.large.MeasureString(Core.userFaction.name).X + UserInterface.textMargin * 2, bounds.Y + (UserInterface.textMargin)));
+            textBounds.Add("money", new Vector2(bounds.X + (float)300 + UserInterface.textMargin * 2, bounds.Y + (UserInterface.textMargin)));
 
         }
 
@@ -55,7 +55,7 @@ namespace HexStrategy
             if (Core.userFaction != null)
             {
 
-                sb.DrawString(Fonts.large, Core.userFaction.name, textBounds["name"], Color.White);
+                sb.DrawString(Fonts.large, Core.userFaction.name + " armies: " + Core.userFaction.armyList.Count, textBounds["name"], Color.White);
                 sb.DrawString(Fonts.large, "$" + Core.userFaction.treasury, textBounds["money"], Color.White);
             }
         }

@@ -11,7 +11,7 @@ namespace HexStrategy
 {
 	public static class Textures
 	{
-		public static Texture2D blue, green, lightBlue, lightGreen, grey, yellow, snow, 
+		public static Texture2D blue, green, lightBlue, lightGreen, grey, darkGrey, yellow, snow, 
                                 tree, white, DarkGreen, DarkBrown, heightMap,
                                 knight;
 
@@ -29,7 +29,8 @@ namespace HexStrategy
 			tree = content.Load<Texture2D> ("Textures/tree");
 
             grey = content.Load<Texture2D>("Textures/grey");
-			heightMap = content.Load<Texture2D> ("Textures/height_earth");
+            darkGrey = content.Load<Texture2D>("Textures/dark_grey");
+			heightMap = content.Load<Texture2D> ("Textures/height_mallorca");
 
             knight = content.Load<Texture2D>("Textures/knight");
 		}

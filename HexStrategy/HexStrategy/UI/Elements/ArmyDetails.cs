@@ -13,14 +13,15 @@ namespace HexStrategy
         protected Boolean IsVisible = true;
         public Rectangle bounds = new Rectangle(0, Core.screenY - 300, 200, 300);
         public List<Rectangle> buttonBounds = new List<Rectangle>();
+        public List<String> buttonLabels = new List<String>();
         //public Dictionary<Vector2> textBounds = new Dictionary<Vector2>();
 
         public Dictionary<String, Vector2> textBounds = new Dictionary<String, Vector2>();
 
         public ArmyDetails()
         {
-            //buttonBounds.Add (new Rectangle(bounds.X,bounds.Y,100,100));
-
+            buttonBounds.Add (new Rectangle(bounds.X,bounds.Y,100,20));
+            buttonLabels.Add("Annex");
 
             textBounds.Add("owner", new Vector2(bounds.X + UserInterface.textMargin, bounds.Y + (UserInterface.textSpacing)));
 
@@ -54,6 +55,9 @@ namespace HexStrategy
                 sb.DrawString(Fonts.medium, "Owner: " + Core.map.selectedArmy.GetOwner().name, textBounds["owner"], Color.White);
 
             }
+
+            
+            
         }
 
 

@@ -20,39 +20,53 @@ namespace HexStrategy
         {
         }
 
-        public void UpdateDaily()
+        public void DayTick()
         {
 
-
-
-
-            //If hexes are less than 4 keep expanding territory
-            if (this.faction.hexes().Count() > 4)
-                return;
-
-            List<Hex> addHex = new List<Hex>();
-
-            foreach (Hex hex in faction.hexes())
-            {
-
-                List<Hex> surroundingHexes = Core.map.GetNeighbours(hex);
-
-                foreach (Hex surroundingHex in surroundingHexes)
-                {
-
-                    addHex.Add(surroundingHex);
-
-                }
-
-            }
-
-            foreach (Hex hex in addHex)
-            {
-                faction.AnnexHex(hex);
-
-            }
-
+            AnnexEmpty();
         }
 
+        private List<Army> GetIdleArmies()
+        {
+            List<Army> idle = new List<Army>();
+
+            foreach (Army army in this.faction.armyList)
+            {
+                if (army.IsSieging() == false)
+                    idle.Add(army);
+            }
+            return idle;
+        }
+        private Army GetIdleArmy()
+        {
+            
+
+            foreach (Army army in this.faction.armyList)
+            {
+                if (army.IsSieging() == false)
+                    return army;
+            }
+
+            return null;
+        }
+        private void AnnexEmpty()
+        {
+            //First check whether our army is already sieging
+            if (this.GetIdleArmy() != null && this.GetIdleArmy().IsSieging())
+                return;
+
+            //Iterate over border neighbours until we find one
+            foreach (Hex border in this.faction.GetBorders())
+            {
+                foreach (Hex neighbour in Core.map.FindNeighbours(border))
+                {
+                    if (neighbour.getOwner() == null && neighbour.IsNotWater() && this.GetIdleArmy() != null)
+                    {
+                        this.GetIdleArmy().Move(neighbour);
+                        return;
+                    }
+                }
+            }
+        }
     }
 }

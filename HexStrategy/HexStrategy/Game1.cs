@@ -41,7 +41,7 @@ namespace HexStrategy
 
             bloom = new BloomComponent(this);
             Components.Add(bloom);
-
+            Logger.AddMessage("Game constructed");
         }
 
         protected override void Initialize()
@@ -50,6 +50,7 @@ namespace HexStrategy
             Core.graphicsDevice = graphics.GraphicsDevice;
             Core.graphicsDevice.RasterizerState = RasterizerState.CullNone;
             base.Initialize();
+            Logger.AddMessage("Initialization complete");
         }
 
 
@@ -66,8 +67,10 @@ namespace HexStrategy
             Map map = new Map();
             Core.map = map;
 
-            Core.userFaction = Core.factions[25];
-            Core.camera.Focus(Core.userFaction.hexes()[0]);
+            Core.userFaction = Core.factions[2];
+            Core.camera.Focus(Core.userFaction.GetOwned()[0]);
+
+
 
             scenery = new Scenery();
 
@@ -76,6 +79,7 @@ namespace HexStrategy
             Render.Initialize();
 
             UserInterface.Load();
+            Logger.AddMessage("Loading complete");
         }
 
         protected override void Update(GameTime gameTime)
@@ -101,28 +105,23 @@ namespace HexStrategy
             bloom.BeginDraw();
             graphics.GraphicsDevice.Clear(new Color(20, 100, 255));
 
-            /* 3D Draw no transparency */
-            GraphicsDevice.BlendState = BlendState.Opaque;
+            /* 3D Draw */
+            GraphicsDevice.BlendState = BlendState.AlphaBlend;
             GraphicsDevice.DepthStencilState = DepthStencilState.Default;
 
             Core.map.Draw3D();
             foreach (Faction faction in Core.factions)
                 faction.DrawArmies();
 
-            /* 3D Draw with transparency */
-
-            GraphicsDevice.BlendState = BlendState.AlphaBlend;
-            GraphicsDevice.DepthStencilState = DepthStencilState.Default;
-
-            foreach (Faction faction in Core.factions)
-                faction.DrawOwnershipFilter();
-
-            /* Component draw e.g. bloom*/
+            /* Component draw e.g. bloom */
             base.Draw(gameTime);
 
             /* 2D Draw */
             spriteBatch.Begin();
             Core.map.Draw2D(spriteBatch);
+
+            foreach (Faction faction in Core.factions)
+                faction.Draw2D(spriteBatch);
 
             UserInterface.Draw(spriteBatch);
 
