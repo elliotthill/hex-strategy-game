@@ -67,8 +67,13 @@ namespace HexStrategy
             Map map = new Map();
             Core.map = map;
 
+            Core.factions.Add(new Faction("Castille", new Vector3(255f/255f,230f/255f,0)));
+            Core.factions.Add(new Faction("Navarre", new Vector3(2550f, 108f/255f, 0)));
+            Core.factions.Add(new Faction("Aragon", new Vector3(255f / 255f, 0, 66f / 255f)));
+            Core.factions.Add(new Faction("Leon", new Vector3(90f/255f, 255f/255f, 0f)));
+
             Core.userFaction = Core.factions[2];
-            Core.camera.Focus(Core.userFaction.GetOwned()[0]);
+            
 
 
 
@@ -77,7 +82,7 @@ namespace HexStrategy
             DTShader dtShader = new DTShader();
             Core.dtShader = dtShader;
             Render.Initialize();
-
+            RenderNormal.Initialize();
             UserInterface.Load();
             Logger.AddMessage("Loading complete");
         }

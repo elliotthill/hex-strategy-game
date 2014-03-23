@@ -13,7 +13,7 @@ namespace HexStrategy
 	{
 		public static Texture2D blue, green, lightBlue, lightGreen, grey, darkGrey, yellow, snow, 
                                 tree, white, DarkGreen, DarkBrown, heightMap,
-                                knight;
+                                knight, shadow, urbanGround, hexNormal;
 
 		public static void LoadContent(ContentManager content)
 		{
@@ -27,12 +27,14 @@ namespace HexStrategy
 			snow = content.Load<Texture2D> ("Textures/snow");
 			white = content.Load<Texture2D> ("Textures/white");
 			tree = content.Load<Texture2D> ("Textures/tree");
-
+            shadow = content.Load<Texture2D>("Textures/shadow");
             grey = content.Load<Texture2D>("Textures/grey");
             darkGrey = content.Load<Texture2D>("Textures/dark_grey");
 			heightMap = content.Load<Texture2D> ("Textures/height_mallorca");
 
             knight = content.Load<Texture2D>("Textures/knight");
+            urbanGround = content.Load<Texture2D>("Textures/urbanground");
+            hexNormal = content.Load<Texture2D>("Textures/hexNormal");
 		}
 
 	}

@@ -28,8 +28,8 @@ namespace HexStrategy
         public static Vector3 ambientLight3 = new Vector3(1f, 1f, 1f);
 
 		public static Vector3 sunDirection = new Vector3(0.2f, -1f, 0.2f);
-		public static Vector4 sunDiffuse = new Vector4(1f,0.75f,0.65f, 1f);
-        public static Vector3 sunDiffuse3 = new Vector3(1f, 0.75f, 0.65f);
+		public static Vector4 sunDiffuse = new Vector4(1f,0.95f,0.9f, 1f);
+        public static Vector3 sunDiffuse3 = new Vector3(1f, 0.95f, 0.9f);
 
 		public static float ambientIntensity = 0.6f;
 		public static float diffuseIntensity = 1.8f;
@@ -37,6 +37,7 @@ namespace HexStrategy
 
 		public static Boolean leftClickLastFrame = false;
 		public static Boolean rightClickLastFrame = false;
+        public static Vector2 mouseVector;
 
 		public static GraphicsDevice graphicsDevice;
 
@@ -48,6 +49,7 @@ namespace HexStrategy
 
 		public static List<Faction> factions = new List<Faction> ();
 		public static Faction userFaction;
+        public static Faction giveallFaction;
 
         /// <summary>
         /// Loads a new game from storage
@@ -78,14 +80,18 @@ namespace HexStrategy
             map.LoadFromWorldData(worldData.hexList);
             factions = worldData.faction;
 
-            //userFaction = factions[worldData.userFactionIndex];
-            userFaction = factions[5];
+            userFaction = factions[worldData.userFactionIndex];
+            //userFaction = factions[5];
         }
 
         public static void Reconstruct()
         {
             Logger.AddMessage("Constructed Factions " + factions.Count);
             Logger.AddMessage("Constructed hexes " + Core.map.hexList.Count);
+
+            foreach (Hex hex in map.hexList)
+                hex.Reconstruct();
+
             foreach (Faction faction in factions)
             {
                 faction.Reconstruct();
@@ -101,6 +107,9 @@ namespace HexStrategy
             {
                 faction.ResetAI();
             }
+
+            
+
         }
 
         public static void Deconstruct()
@@ -141,15 +150,7 @@ namespace HexStrategy
 			else
 				rightClickLastFrame = false;
 
-            if (keyboardState.IsKeyUp(Keys.O) && oldKeyboardState.IsKeyDown(Keys.O))
-            {
-                Core.Save();
-            }
-
-            if (keyboardState.IsKeyUp(Keys.P) && oldKeyboardState.IsKeyDown(Keys.P))
-            {
-                Core.Load();
-            }
+            mouseVector = new Vector2(mouseState.X, mouseState.Y);
 		}
 
 		public static void FinishUpdate(GameTime gameTime)
@@ -215,6 +216,18 @@ namespace HexStrategy
 
 			return "Error";
 		}
+
+        public static Faction FindFaction(String name)
+        {
+
+            foreach (Faction faction in factions)
+            {
+                if (faction.name.ToLower() == name.ToLower())
+                    return faction;
+            }
+
+            return null;
+        }
 
         public static String RandomTownName()
         {

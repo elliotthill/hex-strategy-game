@@ -23,7 +23,8 @@ namespace HexStrategy
 
 
             textBounds.Add("name", new Vector2(bounds.X + UserInterface.textMargin, bounds.Y + (UserInterface.textMargin)));
-            textBounds.Add("money", new Vector2(bounds.X + (float)300 + UserInterface.textMargin * 2, bounds.Y + (UserInterface.textMargin)));
+            textBounds.Add("money", new Vector2(bounds.X + (float)100 + UserInterface.textMargin * 2, bounds.Y + (UserInterface.textMargin)));
+            textBounds.Add("time", new Vector2(bounds.X + bounds.Width - 100, bounds.Y + (UserInterface.textMargin)));
 
         }
 
@@ -45,6 +46,7 @@ namespace HexStrategy
                 return;
 
             sb.Draw(Textures.DarkBrown, bounds, UserInterface.grey);
+            Border.Draw(bounds, sb);
 
             foreach (Rectangle button in buttonBounds)
             {
@@ -55,8 +57,9 @@ namespace HexStrategy
             if (Core.userFaction != null)
             {
 
-                sb.DrawString(Fonts.large, Core.userFaction.name + " armies: " + Core.userFaction.armyList.Count, textBounds["name"], Color.White);
+                sb.DrawString(Fonts.ultra, Core.userFaction.name, textBounds["name"], Color.White);
                 sb.DrawString(Fonts.large, "$" + Core.userFaction.treasury, textBounds["money"], Color.White);
+                sb.DrawString(Fonts.large, Clock.days.ToString(), textBounds["time"], Color.White);
             }
         }
 

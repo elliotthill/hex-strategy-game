@@ -93,6 +93,8 @@
     <Reference Include="System">
       <Private>False</Private>
     </Reference>
+    <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
     <Reference Include="System.Xml">
       <Private>False</Private>
     </Reference>
@@ -132,6 +134,8 @@
     <Compile Include="Rendering\DTShader.cs" />
     <Compile Include="Rendering\Instancing\InstanceDataVertex.cs" />
     <Compile Include="Rendering\Render.cs" />
+    <Compile Include="Rendering\RenderNormal.cs" />
+    <Compile Include="UI\ChatConsole.cs" />
     <Compile Include="UI\Elements\ArmyDetails.cs" />
     <Compile Include="UI\Elements\FactionDetails.cs" />
     <Compile Include="UI\Elements\HexDetails.cs" />
@@ -143,6 +147,7 @@
   <ItemGroup>
     <Content Include="Game.ico" />
     <Content Include="GameThumbnail.png" />
+    <Content Include="Research.txt" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\HexStrategyContent\HexStrategyContent.contentproj">

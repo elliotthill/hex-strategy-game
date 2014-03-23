@@ -27,7 +27,7 @@ namespace HexStrategy
         private List<Hex> addHex = new List<Hex>();
         private AIController aiController;
 
-        //Serial constructor
+        
         public Faction()
         {
         }
@@ -73,6 +73,7 @@ namespace HexStrategy
 
         }
 
+
 		public Faction (String name, Vector3 color, Hex hex, Boolean AI)
 		{
 			this.name = name;
@@ -85,9 +86,21 @@ namespace HexStrategy
             if (AI)
                 aiController = new AIController(this);
 
-            this.color = new Color(colorVec.X, colorVec.Y, colorVec.Y);
-            this.borderColor = new Color(colorVec.X/2f, colorVec.Y/2f, colorVec.Z/2f);
+
+            this.color = new Color(colorVec.X / 2f, colorVec.Y / 2f, colorVec.Z / 2f);
+            this.borderColor = new Color(colorVec.X / 5f, colorVec.Y / 5f, colorVec.Z / 5f);
 		}
+
+        //Create idle faction
+        public Faction(String name, Vector3 color)
+        {
+            this.name = name;
+            this.colorVec = color;
+
+
+            this.color = new Color(colorVec.X / 2f, colorVec.Y / 2f, colorVec.Z / 2f);
+            this.borderColor = new Color(colorVec.X / 5f, colorVec.Y / 5f, colorVec.Z / 5f);
+        }
 
 		public List<Hex> GetOwned()
 		{
@@ -102,7 +115,19 @@ namespace HexStrategy
             visible.Clear();
             foreach (Hex hex in hexList)
             {
-                if (hex.cullState != CullState.Culled)
+                if (hex.getCullState() != CullState.Culled)
+                    visible.Add(hex);
+            }
+
+            return visible;
+        }
+
+        public List<Hex> GetBordersVisible()
+        {
+            visible.Clear();
+            foreach (Hex hex in this.GetBorders())
+            {
+                if (hex.getCullState() != CullState.Culled)
                     visible.Add(hex);
             }
 
@@ -145,16 +170,16 @@ namespace HexStrategy
 
             foreach (Hex hex in hexList)
             {
-                hex.isBorder = false;
+                hex.SetIsBorder(false);
                 foreach (Hex borderHex in Core.map.FindNeighbours(hex))
                 {
                     if (borderHex.getOwner() == null || borderHex.getOwner() != this)
                     {
 
-                        if (!borders.Contains(hex))
+                        if (!borders.Contains(hex) && borderHex.IsNotWater())
                         {
                             borders.Add(hex);
-                            hex.isBorder = true;
+                            hex.SetIsBorder(true);
                         }
                             
                         
@@ -231,21 +256,34 @@ namespace HexStrategy
         {
             CollectTaxes();
 
-            if (this != Core.userFaction)
+            if (this != Core.userFaction && aiController != null)
             {
                 aiController.DayTick();
             }
 
         }
 
+        /*
+         * Only gamey stuff 
+         */
+
         private void CollectTaxes()
         {
             foreach (Hex hex in hexList)
             {
-                treasury += hex.hexData.wealth;
+                treasury += (hex.hexData.population * hex.hexData.wealth * GetTaxRate() * GetTaxCollectionEfficiency()) / 365f;
             }
         }
 
+        private float GetTaxCollectionEfficiency()
+        {
+            return 0.1f;
+        }
+
+        private float GetTaxRate()
+        {
+            return 0.4f;
+        }
 	}
 }
 

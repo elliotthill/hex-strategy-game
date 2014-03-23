@@ -42,38 +42,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Fonts\bitmapBig.png">
-      <Name>bitmapBig</Name>
-      <Importer>TextureImporter</Importer>
-      <Processor>FontTextureProcessor</Processor>
-    </Compile>
-    <Compile Include="Fonts\bitmapGiant.png">
-      <Name>bitmapGiant</Name>
-      <Importer>TextureImporter</Importer>
-      <Processor>FontTextureProcessor</Processor>
-    </Compile>
-    <Compile Include="Fonts\bitmapMedium.png">
-      <Name>bitmapMedium</Name>
-      <Importer>TextureImporter</Importer>
-      <Processor>FontTextureProcessor</Processor>
-    </Compile>
-    <Compile Include="Fonts\bitmapSmall.png">
-      <Name>bitmapSmall</Name>
-      <Importer>TextureImporter</Importer>
-      <Processor>FontTextureProcessor</Processor>
-    </Compile>
-    <Compile Include="Fonts\bitmapTiny.png">
-      <Name>bitmapTiny</Name>
-      <Importer>TextureImporter</Importer>
-      <Processor>FontTextureProcessor</Processor>
-    </Compile>
-    <Compile Include="Fonts\bitmapTitle.png">
-      <Name>bitmapTitle</Name>
-      <Importer>TextureImporter</Importer>
-      <Processor>FontTextureProcessor</Processor>
-    </Compile>
-  </ItemGroup>
-  <ItemGroup>
     <Compile Include="Meshes\castle.fbx">
       <Name>castle</Name>
       <Importer>FbxImporter</Importer>
@@ -282,6 +250,91 @@
       <Name>height_mallorca</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Meshes\church.fbx">
+      <Name>church</Name>
+      <Importer>FbxImporter</Importer>
+      <Processor>ModelProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Meshes\church_town.fbx">
+      <Name>church_town</Name>
+      <Importer>FbxImporter</Importer>
+      <Processor>ModelProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Textures\shadow.png">
+      <Name>shadow</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Meshes\castle_town.fbx">
+      <Name>castle_town</Name>
+      <Importer>FbxImporter</Importer>
+      <Processor>ModelProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Meshes\town.fbx">
+      <Name>town</Name>
+      <Importer>FbxImporter</Importer>
+      <Processor>ModelProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Meshes\market.fbx">
+      <Name>market</Name>
+      <Importer>FbxImporter</Importer>
+      <Processor>ModelProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Textures\urbanground.png">
+      <Name>urbanground</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Shaders\InstancedModelNormal.fx">
+      <Name>InstancedModelNormal</Name>
+      <Importer>EffectImporter</Importer>
+      <Processor>EffectProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Textures\hexNormal.png">
+      <Name>hexNormal</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Fonts\Georgia10pt.png">
+      <Name>Georgia10pt</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>FontTextureProcessor</Processor>
+    </Compile>
+    <Compile Include="Fonts\Georgia12pt.png">
+      <Name>Georgia12pt</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>FontTextureProcessor</Processor>
+    </Compile>
+    <Compile Include="Fonts\Georgia14pt.png">
+      <Name>Georgia14pt</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>FontTextureProcessor</Processor>
+    </Compile>
+    <Compile Include="Fonts\Georgia16pt.png">
+      <Name>Georgia16pt</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>FontTextureProcessor</Processor>
     </Compile>
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\XNA Game Studio\$(XnaFrameworkVersion)\Microsoft.Xna.GameStudio.ContentPipeline.targets" />

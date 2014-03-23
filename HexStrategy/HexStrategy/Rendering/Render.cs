@@ -58,7 +58,7 @@ namespace HexStrategy
             world = newWorld;
         }
 
-        public static void DrawInstances(List<Hex> hexes, Model model, Texture2D texture, float opacity = 1f, Boolean useFactionColor = false)
+        public static void DrawInstances(List<Hex> hexes, Model model, Texture2D texture, float opacity = -1f, Boolean useFactionColor = false)
         {
 
             if (hexes.Count() < 1)
@@ -72,19 +72,19 @@ namespace HexStrategy
                 if (hexes[i] == Core.map.selectedHex)
                 {
 
-                    data[i] = new InstanceDataVertex(world * hexes[i].world, Color.LightGray);
+                    data[i] = new InstanceDataVertex(world * hexes[i].GetWorld(), Color.LightGray);
                 }
                 else
                 {
                     if (useFactionColor == true)
                     {
-                        if(hexes[i].isBorder)
-                            data[i] = new InstanceDataVertex(world * hexes[i].world, hexes[i].getOwner().borderColor);
+                        if(hexes[i].GetIsBorder())
+                            data[i] = new InstanceDataVertex(world * hexes[i].GetWorld(), hexes[i].getOwner().borderColor);
                         else
-                            data[i] = new InstanceDataVertex(world * hexes[i].world, hexes[i].getOwner().color);
+                            data[i] = new InstanceDataVertex(world * hexes[i].GetWorld(), hexes[i].getOwner().color);
                     }
                     else
-                        data[i] = new InstanceDataVertex(world * hexes[i].world, hexes[i].hexData.color);
+                        data[i] = new InstanceDataVertex(world * hexes[i].GetWorld(), hexes[i].hexData.color);
                 }
                 //If using world matrix override (e.g. for castle model)
                 
@@ -134,8 +134,11 @@ namespace HexStrategy
                     diffuseIntensityParameter.SetValue(Core.diffuseIntensity);
                     lightDirectionParameter.SetValue(Core.sunDirection);
                     
+                    
                     colorMapTextureParameter.SetValue(texture);
+                    
                     opacityParameter.SetValue(opacity);
+
                     effect.CurrentTechnique = effect.Techniques["HardwareInstanceLow"];
 
                     // Draw all the instance copies in a single call.

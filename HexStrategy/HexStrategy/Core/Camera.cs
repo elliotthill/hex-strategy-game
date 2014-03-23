@@ -24,6 +24,7 @@ namespace HexStrategy
         public float farDistance = 7000f;
 
 
+
 		public Camera(float aspect)
 		{
 			aspectRatio = aspect;
@@ -33,7 +34,7 @@ namespace HexStrategy
 		public void Update(GameTime gameTime)
 		{
             farDistance = position.Y *140f;
-			lookAt = new Vector3(0,0,30);
+			lookAt = new Vector3(0,0,25);
 
 			rotation = Matrix.CreateRotationY(rotationY);
 			lookAt = Vector3.Transform (lookAt, rotation) + position;
@@ -100,6 +101,33 @@ namespace HexStrategy
             {
                 this.farDistance -= (float)gameTime.ElapsedGameTime.TotalSeconds * 2000f;
             }
+
+            /*
+             * Mouse screen gestures - bounds start outside window area for best user experience when playing in a window (EU series does this)
+             * this stops the "jumping" when your cursor accidentally goes outside the window when moving the camera
+             */
+            Rectangle topScreen = new Rectangle(0, -(int)(Core.screenY * 0.4f), Core.screenX, (int)(Core.screenY * 0.41f));
+            Rectangle bottomScreen = new Rectangle(0, Core.screenY - (int)(Core.screenY * 0.01f), Core.screenX, (int)(Core.screenY * 0.4f));
+
+            Rectangle leftScreen = new Rectangle(-(int)(Core.screenX * 0.4f),0 , (int)(Core.screenX * 0.41f), Core.screenY);
+            Rectangle rightScreen = new Rectangle(Core.screenX - (int)(Core.screenX * 0.02f), 0,Core.screenX - (int)(Core.screenX * 0.4f), Core.screenY);
+
+            if (Core.Maths.IsVector2InsideRect(Core.mouseVector, topScreen))
+            {
+                position += forward * Core.tick * Core.mapSpeed;
+            }
+            else if (Core.Maths.IsVector2InsideRect(Core.mouseVector, bottomScreen))
+            {
+                position -= forward * Core.tick * Core.mapSpeed;
+            }
+            else if (Core.Maths.IsVector2InsideRect(Core.mouseVector, leftScreen))
+            {
+                rotationY += 1f * Core.tick;
+            }
+            else if (Core.Maths.IsVector2InsideRect(Core.mouseVector, rightScreen))
+            {
+                rotationY -= 1f * Core.tick;
+            }
 		}
 
 
@@ -119,7 +147,7 @@ namespace HexStrategy
             //END
 
 
-            float Distance = Vector2.DistanceSquared(this.lookAt2D, hex.position2D);
+            float Distance = Vector2.DistanceSquared(this.lookAt2D, hex.getPosition2D());
 			//Otherwise recalculate
 			if ( Distance > farDistance) {
 				return CullState.Culled;

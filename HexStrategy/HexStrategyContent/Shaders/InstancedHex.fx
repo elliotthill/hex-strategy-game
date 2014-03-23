@@ -9,9 +9,9 @@ float4 AmbientColor;
 float3 DiffuseDirection;
 float4 DiffuseColor;
 float DiffuseIntensity;
-float contrast = 1.1f;
+float contrast = 1.2f;
 float brightness = -0.01f;
-float opacity = 1.0f;
+float opacity = -1.0f;
 
 texture2D ColorMap;
 sampler2D Sampler = sampler_state
@@ -86,7 +86,11 @@ float4 PixelShaderFunctionLow(VertexShaderOutput input) : COLOR0
  
     float4 clr = color*AmbientColor*input.Colour+color*DiffuseIntensity*DiffuseColor*diffuse*input.Colour;
 	clr =  (clr + brightness) * contrast;
-	clr.a = opacity;
+	if (opacity != -1.0f) {
+		clr.a = opacity;
+	} else {
+		clr.a = color.a;
+	}
 	return clr;
 }
 

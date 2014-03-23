@@ -16,12 +16,12 @@ namespace HexStrategy
     public class Hex
 	{
 		public Vector3 position;
-        public Vector2 position2D;
+        private Vector2 position2D;
 
-        public Matrix world = Matrix.Identity;
-        public BoundingSphere bsphere;
+        private Matrix world = Matrix.Identity;
+        private BoundingSphere bsphere;
 		public HexData hexData;
-        public Boolean isBorder = false;
+        private Boolean isBorder = false;
         public int index;
 
 		public Boolean odd = false;
@@ -29,11 +29,20 @@ namespace HexStrategy
         private List<Hex> surroundingHexes;
 		private Faction owner;
 
-        public CullState cullState = CullState.Unkown;
+        private CullState cullState = CullState.Unkown;
 
         //Serial constructor
         public Hex()
         {
+            
+            position2D = new Vector2(position.X, position.Z);
+
+        }
+
+        public void Reconstruct()
+        {
+            world = Matrix.CreateTranslation(position);
+            position2D = new Vector2(position.X, position.Z);
         }
 
 		public Hex(Vector3 position, Vector3 clr, float longtitude)
@@ -43,21 +52,47 @@ namespace HexStrategy
 			this.hexData = new HexData (longtitude, clr);
 
 			if (hexData.terrainType == TerrainType.Water || hexData.terrainType == TerrainType.ShallowWater) {
-				this.position = new Vector3 (this.position.X, this.position.Y - 0.3f, this.position.Z);
+				this.position = new Vector3 (this.position.X, this.position.Y - 0.09f, this.position.Z);
 
 			}
 
-			if (hexData.buildingType == BuildingType.Castle)
-			{
-				Faction faction = new Faction (Core.RandomFactionName (), Core.RandomColorAsVector (),this, true);
-				
-
-				Core.factions.Add(faction);
-			}
             bsphere = new BoundingSphere(position, 1f);
             position2D = new Vector2(position.X, position.Z);
 		}
 
+        public Matrix GetWorld()
+        {
+            return world;
+        }
+
+        public void SetWorld(Matrix world)
+        {
+            this.world = world;
+        }
+
+        public Boolean GetIsBorder()
+        {
+            return isBorder;
+        }
+
+        public void SetIsBorder(Boolean isborder)
+        {
+            this.isBorder = isborder;
+        }
+
+        public CullState getCullState()
+        {
+            return this.cullState;
+        }
+
+        public void SetCullState(CullState cullstate)
+        {
+            this.cullState = cullstate;
+        }
+        public Vector2 getPosition2D()
+        {
+            return position2D;
+        }
 
 		public void DrawLabels(SpriteBatch sb)
 		{

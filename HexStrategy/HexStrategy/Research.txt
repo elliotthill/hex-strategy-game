@@ -1,0 +1,86 @@
+﻿Population
+==================
+
+  France overtook Spain and Italy in terms of population by 1340.
+  Population of Paris: 80,000
+  Venice: 100,000
+  Florence: 96,000
+
+  Black Death killed one third.
+
+
+  Increasing food production increases population, it also reduces
+  the number working in agriculture, increasing urbanization,
+  growing the economy.
+
+  Literacy, technological progress, representative government,
+  empires COULD contribute to economic growth.
+
+  "The model explains five variables–the
+population, the wage rate, urbanization, agricultural productivity, and the proto-industrial
+revolution"
+
+	On Belgium and England:
+	"Rising agricultural efficiency
+contributed to economic development by providing food, wool, and flax to support the
+nonagricultural economy, by releasing labour for manufacturing employment, and by providing
+a surplus that could finance investment or sustain the conspicuous consumption of the
+aristocracy and state"
+
+	On the five variables mention above being reinforcing:
+	"Higher urbanization, for instance, led to higher agricultural productivity. Causation
+worked in the opposite way as well with higher agricultural productivity increasing the share of
+the population living in cities"
+
+The view of development is, thus, one in which living
+standards, urbanization, proto-industrialization, and agricultural revolutions were mutually
+reinforcing. Neither was a prime mover pushing all of the others forward. Other prime movers include the literacy rate,
+a productivity variable indexing the growth of competitive advantage in the new draperies,
+previous levels of urbanization, the land-labour ratio.
+
+  Land-labour ratio
+  dividing agricultural land by the population gives the land-labour ratio T/L.
+
+
+  Intercontinental trade
+  Some countries were successful in the race for empire, while others were not. Spain
+seized a vast empire in Latin America and the Phillippines, England acquired much of north
+America, some rich sugar islands in the Carribean, and Bengal, the Netherlands conquered
+Indonesia, the original Spice Islands and Surinam, and France had important possessions in
+North America, the Carribean, and India. Portugal had a substantial empire in Brazil, Africa,
+and South Asia but is not in the data base analyzed here. The other European countries were not
+in the running.
+The effect of empires is measured by TRADEPOP, the volume of nonspecie trade per
+capita.
+10
+All of the countries were mercantilist and tried to reserve trade with their colonies for
+their nationals. The experience of the Dutch is the exception that proves the rule. They were
+highly efficient in shipping and the closest to free traders in the Atlantic economy (but not in the
+Asian). However, the Dutch were squeezed out of most Atlantic colonial trade by the
+regulations of the English, French, and Spanish. Only in times of war could the Dutch make
+much headway (De Vries and van der Woude 1997, pp. 476-9). Many factors affect trade
+volumes, but the experience of the Dutch shows the primary of politics in this period, which is
+why trade is treated as an exogenous measure of imperial advantage.
+It should be noted that trade volumes are measured exclusive of shipments of gold and
+silver. This affects the measurement of Spanish trade where bullion was the main cargo. While
+the Dutch and, especially, the English empires offered trade and markets, the Spanish may have
+been too successful in generating loot: The gold and silver from the American inflated prices and
+wages in Spain rendering much manufacturing unprofitable (Hamilton 1934, 1936, 1947,
+Dreilichman 2002). The effects of the Spanish empire are tested in some specifications by
+including a dummy variable SPANEMP
+
+  see: http://www.nuffield.ox.ac.uk/users/allen/povprog3NEW.pdf
+
+  States in Northern Europe have greater potential for food production
+  as we see in this period, Southern states populations and urbanizations
+  decline. see http://i451.photobucket.com/albums/qq235/guaporense/30largestcitieseurope.png
+
+
+
+   In Western Europe the aggregate rate of urbanization gradually increased from 5.8% in 1500 to 10.2% in 1800.
+
+	"while in England the proportion of the population working in agriculture fell from 74% to 43% over the same period, in Italy and Spain, the proportions didn't change at all. Reflecting a tendency towards stagnating incomes in these regions
+	source: http://historum.com/european-history/44491-economic-growth-early-modern-europe.html
+	 
+
+	 

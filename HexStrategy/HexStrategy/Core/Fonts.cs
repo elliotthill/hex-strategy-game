@@ -16,10 +16,10 @@ namespace HexStrategy
 
 		public static void LoadContent(ContentManager content)
 		{
-			small = content.Load<SpriteFont>("Fonts/bitmapSmall");
-            medium = content.Load<SpriteFont>("Fonts/bitmapMedium");
-            large = content.Load<SpriteFont>("Fonts/bitmapBig");
-            ultra = content.Load<SpriteFont>("Fonts/bitmapGiant");
+			small = content.Load<SpriteFont>("Fonts/Georgia10pt");
+            medium = content.Load<SpriteFont>("Fonts/Georgia12pt");
+            large = content.Load<SpriteFont>("Fonts/Georgia14pt");
+            ultra = content.Load<SpriteFont>("Fonts/Georgia16pt");
 
             large.Spacing = 1.3f;
             medium.Spacing = 1.3f;

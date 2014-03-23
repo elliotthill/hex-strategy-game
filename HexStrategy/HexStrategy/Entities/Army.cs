@@ -91,9 +91,6 @@ namespace HexStrategy
                     this.captureProgress = -1f;
                 }
             }
-
-
-
         }
 
         private void StartCapture()
@@ -179,14 +176,14 @@ namespace HexStrategy
                 return;
 
             if (Core.map.selectedArmy != null && Core.map.selectedArmy == this)
-                Core.dtShader.Draw(this.position + new Vector3(0f, 0.6f, 0f), Meshes.knight, Textures.knight, 0.5f, 2f, rotation);
+                Core.dtShader.Draw(this.position + new Vector3(0f, 0.6f, 0f), Meshes.knight, Textures.knight, 0.33f, 1f, rotation);
             else
-		        Core.dtShader.Draw (this.position + new Vector3(0f, 0.6f, 0f), Meshes.knight, Textures.knight,0.5f, 1f, rotation);
+		        Core.dtShader.Draw (this.position + new Vector3(0f, 0.6f, 0f), Meshes.knight, Textures.knight,0.33f, 1f, rotation);
 		}
 
 		public void Draw2D(SpriteBatch sb)
 		{
-            if (this.hex.cullState == CullState.Culled)
+            if (this.hex.getCullState() == CullState.Culled)
                 return;
 
 

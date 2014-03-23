@@ -11,7 +11,7 @@ namespace HexStrategy
     public class ArmyDetails
     {
         protected Boolean IsVisible = true;
-        public Rectangle bounds = new Rectangle(0, Core.screenY - 300, 200, 300);
+        public Rectangle bounds = new Rectangle(Core.screenX-204, Core.screenY - 300, 200, 300);
         public List<Rectangle> buttonBounds = new List<Rectangle>();
         public List<String> buttonLabels = new List<String>();
         //public Dictionary<Vector2> textBounds = new Dictionary<Vector2>();

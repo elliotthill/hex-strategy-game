@@ -7,9 +7,10 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace HexStrategy
 {
+
 	public enum BuildingType {
 
-		None, Castle
+		None, Town, Fortified, Church, Port, Market
 	}
 
 	public enum TerrainType{
@@ -41,13 +42,18 @@ namespace HexStrategy
 		public BuildingType buildingType;
 		public TerrainType terrainType;
 
+
         public String name;
 
+        
 		public int population = 0;
-		public float wealth = 0.1f;
+        //Wealth per person
+        public float wealth = 1f;
+
 		public float longtitude;
 		public float alpha = 1f;
         public Color color;
+
 
         //Serial constructor
         public HexData()
@@ -136,14 +142,6 @@ namespace HexStrategy
 					this.terrainType = TerrainType.DryPlains;
 
 			}
-
-
-            if (this.terrainType == TerrainType.Plains && Core.RandomFloat() < 0.08f && Core.RandomFloat() < 0.08f)
-            {
-                this.buildingType = BuildingType.Castle;
-                this.name = Core.RandomTownName();
-            }
-
             color = new Color((this.alpha / 2) + 0.1f, (this.alpha / 2) + 0.1f,( this.alpha / 2) + 0.1f);
 		}
 
@@ -154,7 +152,7 @@ namespace HexStrategy
         /// <param name="position"></param>
 		public void DrawLabels(SpriteBatch sb, Vector3 position)
 		{
-			if (buildingType == BuildingType.Castle) {
+			if (buildingType != BuildingType.None && this.name != null) {
 				Vector3 location = Core.graphicsDevice.Viewport.Project(new Vector3(position.X, position.Y, position.Z), Core.camera.projection, Core.camera.view, Matrix.Identity);
 				float distance = Vector3.DistanceSquared (position, Core.camera.position);
                 
@@ -214,6 +212,7 @@ namespace HexStrategy
 
             return cost;
         }
+
 	}
 }
 

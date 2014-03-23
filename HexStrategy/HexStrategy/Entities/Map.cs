@@ -29,7 +29,13 @@ namespace HexStrategy
         List<Hex> steppeHex = new List<Hex>();
 
         List<Hex> castleHex = new List<Hex>();
+        List<Hex> churchHex = new List<Hex>();
+        List<Hex> townHex = new List<Hex>();
+        List<Hex> marketHex = new List<Hex>();
 
+        //Shadows for buildings
+        List<Hex> shadowHex = new List<Hex>();
+        List<Hex> urbanGroundHex = new List<Hex>();
         #endregion
 
         //FBX hex model is imperfect
@@ -50,7 +56,7 @@ namespace HexStrategy
             //Bug, doesnt work if you put dis in hex constructor :$
             foreach (Hex hex in hexList)
             {
-                hex.world = Matrix.CreateTranslation(hex.position);
+                hex.SetWorld(Matrix.CreateTranslation(hex.position));
             }
 
 		}
@@ -117,13 +123,16 @@ namespace HexStrategy
 
 		private void UpdateMouse(GameTime gameTime)
 		{
+            if (UserInterface.isMouseOverUI)
+                return;
+
             UpdateLeftMousePicking(gameTime);
             UpdateRightMousePicking(gameTime);
 		}
         private void UpdateLeftMousePicking(GameTime gameTime)
         {
             
-            if (Core.leftClickLastFrame == true)
+            if (Core.leftClickLastFrame == true || Core.mouseState.LeftButton == Microsoft.Xna.Framework.Input.ButtonState.Pressed)
             {
 
                 /* Check user armies */
@@ -156,10 +165,13 @@ namespace HexStrategy
 
 
                     float? result = new BoundingSphere(new Vector3(hex.position.X,
-                                                                    hex.position.Y + 0.5f,
+                                                                    hex.position.Y,
                                                                     hex.position.Z), 1f).Intersects(Core.camera.PickRay());
                     if (result.HasValue)
                     {
+                        if (Core.giveallFaction != null && hex.IsNotWater())
+                            Core.giveallFaction.AnnexHex(hex);
+
                         //User clicked this hex
                         this.selectedHex = hex;
                         this.selectedArmy = null;
@@ -208,14 +220,14 @@ namespace HexStrategy
 
             foreach (Hex hex in hexList)
             {
-                hex.cullState = Core.camera.GetHexCullState(hex);
+                hex.SetCullState(Core.camera.GetHexCullState(hex));
 
-                if (hex.cullState != CullState.Culled)
+                if (hex.getCullState() != CullState.Culled)
                     visibleHex.Add(hex);
             }
             //IF camera really zoomed out only draw faction filter
 
-            if (Core.camera.position.Y < 100f)
+            if (Core.camera.position.Y < 180f)
             {
                 /* Sort those visible hexes into sublists for batch rendering */
                 plainHex.Clear();
@@ -232,7 +244,11 @@ namespace HexStrategy
                 rainforestHex.Clear();
                 steppeHex.Clear();
                 castleHex.Clear();
-
+                churchHex.Clear();
+                marketHex.Clear();
+                townHex.Clear();
+                shadowHex.Clear();
+                urbanGroundHex.Clear();
                 /* Sort each visible hex into appropriate sublist */
                 foreach (Hex hex in visibleHex)
                 {
@@ -263,54 +279,90 @@ namespace HexStrategy
                     else if (hex.hexData.terrainType == TerrainType.Steppe)
                         steppeHex.Add(hex);
 
-                    if (hex.hexData.buildingType == BuildingType.Castle)
+                    if (hex.hexData.buildingType == BuildingType.Fortified)
+                    {
                         castleHex.Add(hex);
+                        urbanGroundHex.Add(hex);
+                    }
+                    else if (hex.hexData.buildingType == BuildingType.Church)
+                    {
+                        churchHex.Add(hex);
+                        urbanGroundHex.Add(hex);
+                    }
+                    else if (hex.hexData.buildingType == BuildingType.Town)
+                    {
+                        townHex.Add(hex);
+                        urbanGroundHex.Add(hex);
+                    }
+                    else if (hex.hexData.buildingType == BuildingType.Market)
+                    {
+                        marketHex.Add(hex);
+                        urbanGroundHex.Add(hex);
+                    }
 
                 }
 
                 Model hexModel = Meshes.hexTopInstanced;
 
                 /* Batch draw each sublist */
-                Render.DrawInstances(plainHex, hexModel, Textures.green);
-                Render.DrawInstances(desertHex, hexModel, Textures.yellow);
-                Render.DrawInstances(dryPlainHex, hexModel, Textures.lightGreen);
-                Render.DrawInstances(waterHex, hexModel, Textures.blue);
-                Render.DrawInstances(shallowWaterHex, hexModel, Textures.blue);
-                Render.DrawInstances(mountainHex, hexModel, Textures.tree);
-                Render.DrawInstances(forestHex, hexModel, Textures.tree);
-                Render.DrawInstances(coldPlainHex, hexModel, Textures.snow);
-                Render.DrawInstances(iceHex, hexModel, Textures.white);
-                Render.DrawInstances(snowHex, hexModel, Textures.white);
-                Render.DrawInstances(savannaHex, hexModel, Textures.lightGreen);
-                Render.DrawInstances(rainforestHex, hexModel, Textures.tree);
-                Render.DrawInstances(steppeHex, hexModel, Textures.DarkBrown);
+                Render.DrawInstances(plainHex, hexModel, Textures.green, 1f);
+                Render.DrawInstances(desertHex, hexModel, Textures.yellow, 1f);
+                Render.DrawInstances(dryPlainHex, hexModel, Textures.lightGreen, 1f);
+                Render.DrawInstances(waterHex, Meshes.hexTop, Textures.blue, 1f);
+                Render.DrawInstances(shallowWaterHex, Meshes.hexTop, Textures.blue, 1f);
+                Render.DrawInstances(mountainHex, hexModel, Textures.tree, 1f);
+                Render.DrawInstances(forestHex, hexModel, Textures.tree, 1f);
+                Render.DrawInstances(coldPlainHex, hexModel, Textures.snow, 1f);
+                Render.DrawInstances(iceHex, hexModel, Textures.white, 1f);
+                Render.DrawInstances(snowHex, hexModel, Textures.white, 1f);
+                Render.DrawInstances(savannaHex, hexModel, Textures.lightGreen, 1f);
+                Render.DrawInstances(rainforestHex, hexModel, Textures.tree, 1f);
+                Render.DrawInstances(steppeHex, hexModel, Textures.DarkBrown, 1f);
 
                 /* Draw mountains, trees and castles */
-                Render.DrawInstances(mountainHex, Meshes.mountain, Textures.DarkBrown);
-                Render.DrawInstances(forestHex, Meshes.tree, Textures.green, 0.75f);
-                Render.DrawInstances(rainforestHex, Meshes.tree, Textures.DarkGreen);
-
-                Render.setWorld(Matrix.CreateScale(0.00065f) * Matrix.CreateTranslation(new Vector3(0f, 0.65f, 0.3f)));
-                Render.DrawInstances(castleHex, Meshes.castle, Textures.darkGrey);
+                Render.setWorld(Matrix.CreateTranslation(new Vector3(0, -0.15f, 0)));
+                Render.DrawInstances(mountainHex, Meshes.mountain, Textures.green, 1f);
                 Render.setWorld(Matrix.Identity);
+
+                Render.setWorld(Matrix.CreateScale(0.6f) *Matrix.CreateTranslation(0,0.2f,0f));
+                Render.DrawInstances(forestHex, Meshes.tree, Textures.green, 1f);
+                Render.DrawInstances(rainforestHex, Meshes.tree, Textures.DarkGreen, 1f);
+                Render.setWorld(Matrix.Identity);
+               
+                Render.setWorld(Matrix.CreateTranslation(new Vector3(0,0.01f,0)));
+                Render.DrawInstances(shadowHex, Meshes.hexTopInstanced, Textures.shadow);
+                Render.DrawInstances(urbanGroundHex, Meshes.hexTopInstanced, Textures.urbanGround);
+                Render.setWorld(Matrix.Identity);
+
+                //TODO: draw towns from components e.g. houses individually so we can use textures
+                Render.DrawInstances(castleHex, Meshes.castleTown, Textures.darkGrey, 1f);
+                Render.DrawInstances(churchHex, Meshes.churchTown, Textures.darkGrey, 1f);
+                Render.DrawInstances(marketHex, Meshes.market, Textures.darkGrey, 1f);
+                Render.DrawInstances(townHex, Meshes.town, Textures.DarkBrown, 1f);
 
                 /*
                  * Draw faction ownership tiles
                  */
+                Render.setWorld(Matrix.CreateTranslation(new Vector3(0, 0.02f, 0)));
+
                 foreach (Faction faction in Core.factions)
                 {
                     Render.DrawInstances(faction.GetVisible(), Meshes.hexTopInstanced, Textures.white, 0.3f, true);
+                    Render.DrawInstances(faction.GetBordersVisible(), Meshes.hexTopInstanced, Textures.white, 0.4f, true);
                 }
+                Render.setWorld(Matrix.Identity);
             }
             else
             {
                 /*
                  * Draw faction ownership tiles
                  */
+                Render.setWorld(Matrix.CreateTranslation(new Vector3(0, 0.02f, 0)));
                 foreach (Faction faction in Core.factions)
                 {
                     Render.DrawInstances(faction.GetVisible(), Meshes.hexTopInstanced, Textures.white, 1f, true);
                 }
+                Render.setWorld(Matrix.Identity);
             }
 
 

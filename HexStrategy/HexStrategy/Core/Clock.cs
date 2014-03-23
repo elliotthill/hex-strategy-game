@@ -12,7 +12,8 @@ namespace HexStrategy
         public static float seconds = 6f;
 
         public static int year = 1588;
-        public static float timeCompression = 20f;
+        public static int days = 0;
+        public static float timeCompression = 0.5f;
 
         public static void Update(GameTime gameTime)
         {
@@ -29,6 +30,8 @@ namespace HexStrategy
         {
             foreach (Faction faction in Core.factions)
                 faction.DayTick();
+
+            days += 1;
         }
 
 
