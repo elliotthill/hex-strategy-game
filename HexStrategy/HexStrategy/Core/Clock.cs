@@ -6,35 +6,72 @@ using Microsoft.Xna.Framework.Input;
 
 namespace HexStrategy
 {
-
+    public enum ClockState
+    {
+        Running, Paused
+    }
     public static class Clock
     {
-        public static float seconds = 6f;
+        public static float seconds = 5f;
+        public static ClockState clockState = ClockState.Running;
 
-        public static int year = 1588;
-        public static int days = 0;
-        public static float timeCompression = 0.5f;
+        public static float timeCompression = 2f;
+
+        public static DateTime dateTime = new DateTime(1200, 1, 1);
+        public static int lastDayMonth = dateTime.Month;
+        public static int lastDayYear = dateTime.Year;
 
         public static void Update(GameTime gameTime)
         {
+            
             seconds -= (float)gameTime.ElapsedGameTime.TotalSeconds * timeCompression;
 
             if (seconds < 0)
             {
-                seconds = 6f;
+                seconds = 5f;
                 DayTick();    
             }
         }
 
         private static void DayTick()
         {
+            if (clockState != ClockState.Running)
+                return;
+
             foreach (Faction faction in Core.factions)
                 faction.DayTick();
 
-            days += 1;
+            dateTime = dateTime.AddDays(1);
+
+            if (dateTime.Month != lastDayMonth)
+            {
+                //Advanced a month
+                foreach (Faction faction in Core.factions)
+                    faction.MonthTick();
+            }
+            if (dateTime.Year != lastDayYear)
+            {
+                //Advanced a year
+                foreach (Faction faction in Core.factions)
+                    faction.YearTick();
+
+            }
+
+            lastDayMonth = dateTime.Month;
+            lastDayYear = dateTime.Year;
         }
 
+        public static void Pause()
+        {
+            timeCompression = 0f;
+            clockState = ClockState.Paused;
+        }
 
+        public static void Unpause()
+        {
+            timeCompression = 0.5f;
+            clockState = ClockState.Running;
+        }
         
     }
 }

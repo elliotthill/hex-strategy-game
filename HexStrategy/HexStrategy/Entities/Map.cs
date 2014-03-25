@@ -349,6 +349,7 @@ namespace HexStrategy
                 {
                     Render.DrawInstances(faction.GetVisible(), Meshes.hexTopInstanced, Textures.white, 0.3f, true);
                     Render.DrawInstances(faction.GetBordersVisible(), Meshes.hexTopInstanced, Textures.white, 0.4f, true);
+
                 }
                 Render.setWorld(Matrix.Identity);
             }

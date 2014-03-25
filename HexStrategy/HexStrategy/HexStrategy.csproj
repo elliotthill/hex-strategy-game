@@ -120,6 +120,7 @@
     <Compile Include="Core\Textures.cs" />
     <Compile Include="Entities\Army.cs" />
     <Compile Include="Entities\Cube.cs" />
+    <Compile Include="Entities\Diplomacy.cs" />
     <Compile Include="Entities\Faction.cs" />
     <Compile Include="Entities\Hex.cs" />
     <Compile Include="Entities\HexData.cs" />

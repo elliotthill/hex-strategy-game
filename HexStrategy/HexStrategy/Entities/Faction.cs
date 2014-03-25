@@ -14,7 +14,15 @@ namespace HexStrategy
 		public Vector3 colorVec;
         public Color color, borderColor;
 
-        public float treasury = 1f;
+        public float population = 0f;
+        public float treasury = 0f;
+        public float GDPc = 0f;
+        public float foodCost = 1f;
+        public float totalFood = 0f;
+        public float lastDayTaxRevenue = 0f;
+        public float percentAgriculture = 0.5f;
+
+        public List<Diplomacy> diplomacy = new List<Diplomacy>();
 
 		private List<Hex> hexList = new List<Hex>();
         public List<int> hexListIndicies;
@@ -26,7 +34,6 @@ namespace HexStrategy
 
         private List<Hex> addHex = new List<Hex>();
         private AIController aiController;
-
         
         public Faction()
         {
@@ -56,6 +63,7 @@ namespace HexStrategy
             //Reconstruct hexList from indicies - use proxy obj
             if (Core.userFaction != this)
                 aiController = new AIController(this);
+
 
 
             CalculateBorders();
@@ -120,6 +128,35 @@ namespace HexStrategy
             }
 
             return visible;
+        }
+        public List<Faction> getEnemies()
+        {
+            List<Faction> enemies = new List<Faction>();
+
+            foreach (Diplomacy diplo in diplomacy)
+            {
+                if (diplo.diplomacyType == DiplomacyType.War)
+                    enemies.Add(diplo.getTargetFaction());
+            }
+            return enemies;
+        }
+        public List<Faction> getAllies()
+        {
+            List<Faction> allies = new List<Faction>();
+
+            foreach (Diplomacy diplo in diplomacy)
+            {
+                if (diplo.diplomacyType == DiplomacyType.Allied)
+                    allies.Add(diplo.getTargetFaction());
+            }
+            return allies;
+        }
+        public Boolean AreWeAtWar()
+        {
+            if (getEnemies().Count() > 0)
+                return true;
+
+            return false;
         }
 
         public List<Hex> GetBordersVisible()
@@ -250,11 +287,16 @@ namespace HexStrategy
         {
             foreach (Army army in armyList)
                 army.Update(gameTime);
+
+            if (this != Core.userFaction && aiController != null)
+            {
+                aiController.Update();
+            }
         }
 
         public void DayTick()
         {
-            CollectTaxes();
+            EconomicTick();
 
             if (this != Core.userFaction && aiController != null)
             {
@@ -263,26 +305,80 @@ namespace HexStrategy
 
         }
 
-        /*
-         * Only gamey stuff 
-         */
-
-        private void CollectTaxes()
+        public void MonthTick()
         {
-            foreach (Hex hex in hexList)
+            if (this != Core.userFaction && aiController != null)
             {
-                treasury += (hex.hexData.population * hex.hexData.wealth * GetTaxRate() * GetTaxCollectionEfficiency()) / 365f;
+                aiController.MonthTick();
             }
         }
 
-        private float GetTaxCollectionEfficiency()
+        public void YearTick()
         {
-            return 0.1f;
+            if (this != Core.userFaction && aiController != null)
+            {
+                aiController.YearTick();
+            }
         }
 
+        /*
+         * Only gamey stuff 
+         */
+        private void EconomicTick()
+        {
+
+
+            population = 0f;
+            totalFood = 0f;
+            GDPc = 0f;
+
+            //Calculate faction values first
+            foreach (Hex hex in hexList)
+            {
+                
+                population += hex.hexData.population;
+                totalFood += hex.hexData.agriculturalOutput;
+                GDPc += hex.hexData.tradeItemsOutput;
+            }
+
+            //Per capita
+            GDPc = GDPc/ population;
+
+            foodCost = (population / totalFood)  + GetTaxRate();
+            foodCost = (foodCost < 0.5f) ? 0.5f : (foodCost > 2f) ? 2f : foodCost;
+            
+            //If food cost is high, move more people to agriculture
+            if (foodCost > 1.1f)
+                percentAgriculture += 0.025f;
+            else if (foodCost < 0.9f)
+                percentAgriculture -= 0.025f;
+
+            lastDayTaxRevenue = 0f;
+            foreach (Hex hex in hexList)
+            {
+                hex.hexData.EconomicTick(foodCost, GetTaxRate(), GetTaxEff(), 1f, 1f, percentAgriculture);
+                lastDayTaxRevenue += hex.hexData.taxRevenue;
+            }
+            treasury += lastDayTaxRevenue;
+
+        }
+
+        /// <summary>
+        /// What percentage of the tax rate ends up in the state coffers?
+        /// </summary>
+        /// <returns></returns>
+        private float GetTaxEff()
+        {
+            return 0.5f;
+        }
+
+        /// <summary>
+        /// What percentage of a persons income was subject to tax?
+        /// </summary>
+        /// <returns></returns>
         private float GetTaxRate()
         {
-            return 0.4f;
+            return 0.3f;
         }
 	}
 }

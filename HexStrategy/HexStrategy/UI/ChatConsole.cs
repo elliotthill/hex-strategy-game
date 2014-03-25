@@ -149,6 +149,26 @@ namespace HexStrategy
                                     message += "'";
                                 else if (key == Keys.D7 && Core.keyboardState.IsKeyDown(Keys.LeftShift))
                                     message += "&";
+                                else if (key == Keys.D0)
+                                    message += "0";
+                                else if (key == Keys.D1)
+                                    message += "1";
+                                else if (key == Keys.D2)
+                                    message += "2";
+                                else if (key == Keys.D3)
+                                    message += "3";
+                                else if (key == Keys.D4)
+                                    message += "4";
+                                else if (key == Keys.D5)
+                                    message += "5";
+                                else if (key == Keys.D6)
+                                    message += "6";
+                                else if (key == Keys.D7)
+                                    message += "7";
+                                else if (key == Keys.D8)
+                                    message += "8";
+                                else if (key == Keys.D9)
+                                    message += "9";
                                 else
                                 {
 
@@ -186,6 +206,13 @@ namespace HexStrategy
                                             Core.giveallFaction = null;
                                             break;
 
+                                        case "pause":
+                                            Clock.Pause();
+                                            break;
+
+                                        case "resume":
+                                            Clock.Unpause();
+                                            break;
 
                                     }
 
@@ -254,6 +281,27 @@ namespace HexStrategy
                                         if (faction != null && Core.map.selectedHex != null)
                                             faction.armyList.Add(new Army(Core.map.selectedHex, faction));
                                     }
+                                    else if (messageLower.StartsWith("population") || messageLower.StartsWith("pop"))
+                                    {
+                                        String[] words = messageLower.Split(' ');
+
+                                        int pop = Convert.ToInt32(words[1]);
+                                        
+
+                                        if (Core.map.selectedHex != null)
+                                            Core.map.selectedHex.hexData.population = pop;
+                                    }
+                                    else if (messageLower.StartsWith("switch"))
+                                    {
+                                        String[] words = messageLower.Split(' ');
+
+                                        String factionName = words[1];
+                                        Faction faction = Core.FindFaction(words[1]);
+
+                                        if (faction != null)
+                                            Core.userFaction = faction;
+                                    }
+
 
                                     FieldIsActive = false;
                                     Logger.AddMessage(message);

@@ -28,7 +28,7 @@ namespace HexStrategy
         public static void AddMessage(String Message)
         {
             Log.Add(Message);
-            if (Log.Count() > 25)
+            if (Log.Count() > 20)
             {
                 Log.RemoveAt(0);
                 Log.TrimExcess();

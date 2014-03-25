@@ -18,6 +18,7 @@ namespace HexStrategy
 {
     /// <summary>
     /// Non static class allows easy save file IO
+    /// Make calls via Core.load and Core.save
     /// </summary>
     public class PersistentStorage
     {

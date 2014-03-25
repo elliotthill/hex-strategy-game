@@ -20,8 +20,9 @@ namespace HexStrategy
 
         public static float scrollSpeed = 5f;
 
-		public static int screenX = 1440;
-		public static int screenY = 900;
+		public static int screenX = 1280;
+		public static int screenY = 768;
+
 		public static float contrast = 1.3f;
 
         public static Vector4 ambientLight = new Vector4(1f, 1f, 1f, 1f);
@@ -50,6 +51,7 @@ namespace HexStrategy
 		public static List<Faction> factions = new List<Faction> ();
 		public static Faction userFaction;
         public static Faction giveallFaction;
+
 
         /// <summary>
         /// Loads a new game from storage
@@ -137,6 +139,19 @@ namespace HexStrategy
 
 
 		}
+
+        public static void SetupFactionRelations()
+        {
+            foreach (Faction faction in factions)
+            {
+                foreach (Faction relFaction in factions)
+                {
+                    if (faction != relFaction)
+                        faction.diplomacy.Add(new Diplomacy(faction, relFaction));
+                }
+
+            }
+        }
 
 		private static void UpdateMouse()
 		{
@@ -310,6 +325,34 @@ namespace HexStrategy
             }
 
             return sb.ToString();
+        }
+
+        public static String Format(float number)
+        {
+            if (number < 950)
+            {
+                return Math.Round(number, 1).ToString();
+            }
+            else if (number < 950000)
+            {
+                float inK = number / 1000;
+                return Math.Round(inK, 1).ToString() + "K";
+            }
+            else if (number < 950000000)
+            {
+                float inMill = number / 1000000;
+                return Math.Round(inMill, 1).ToString() + "M";
+            }
+            else if (number < 950000000000)
+            {
+                float inBill = number / 1000000000;
+                return Math.Round(inBill, 1).ToString() + "B";
+            }
+            else
+            {
+                float inTrill = number / 1000000000000;
+                return Math.Round(inTrill, 1).ToString() + "T";
+            }
         }
 
         public static class Maths

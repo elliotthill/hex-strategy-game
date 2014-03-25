@@ -46,9 +46,22 @@ namespace HexStrategy
         public String name;
 
         
-		public int population = 0;
-        //Wealth per person
-        public float wealth = 1f;
+		public float population = 100f;
+
+        //Local GDP/c or average wage = Price of trade goods produced / population
+        public float GDPc = 600f;
+
+        //Tax revenue = Population * GDP/c * Tax Rate * Tax collection efficiency
+        public float taxRevenue = 1f;
+
+        //Population growth = 1/cost of food
+        public float popGrowth = 1f;
+
+        //Agricultural output = (local pop * %of pop employed in agriculture) * terrain modifier * agricultural 
+        public float agriculturalOutput = 40f;
+
+        //Trade items output = local pop * local pop % not employed in agriculture * manufacturing efficiency
+        public float tradeItemsOutput = 60f;
 
 		public float longtitude;
 		public float alpha = 1f;
@@ -143,7 +156,79 @@ namespace HexStrategy
 
 			}
             color = new Color((this.alpha / 2) + 0.1f, (this.alpha / 2) + 0.1f,( this.alpha / 2) + 0.1f);
+
+            SetPopulation();
 		}
+
+        private void SetPopulation()
+        {
+            switch (this.terrainType)
+            {
+                case TerrainType.Plains:
+                    population = 100;
+                    break;
+
+                case TerrainType.DryPlains:
+                    population = 100;
+                    break;
+
+                case TerrainType.ColdPlains:
+                    population = 80;
+                    break;
+            }
+        }
+
+        public void EconomicTick(float foodCost, float taxRate, float taxEff, float agriculturalEff
+            , float manufacturingEff, float percentAgriculture)
+        {
+
+            GDPc = (tradeItemsOutput) / population;
+            taxRevenue = (population * GDPc * taxRate * taxEff)/365f;
+
+            popGrowth = (1f - foodCost)/365f;
+            population += population * popGrowth;
+
+            
+
+            agriculturalOutput = ((population * percentAgriculture))*2f* GetAgricultureModifier() * agriculturalEff;
+            tradeItemsOutput = (population * (1f - percentAgriculture))*1000f * GetManufacturingModifier() * manufacturingEff; 
+        }
+
+        public float GetAgricultureModifier()
+        {
+            switch (terrainType)
+            {
+                case TerrainType.Plains:
+                    return 1f;
+                case TerrainType.ColdPlains:
+                    return 0.6f;
+                case TerrainType.DryPlains:
+                    return 0.6f;
+                case TerrainType.Forest:
+                    return 0.6f;
+
+            }
+
+            return 0f;
+        }
+
+        public float GetManufacturingModifier()
+        {
+            switch (buildingType)
+            {
+                case BuildingType.Market:
+                    return 1.2f;
+                case BuildingType.Fortified:
+                    return 1.1f;
+                case BuildingType.Port:
+                    return 1.1f;
+                case BuildingType.Town:
+                    return 1.3f;
+
+            }
+
+            return 1f;
+        }
 
         /// <summary>
         /// Draws the town name and details

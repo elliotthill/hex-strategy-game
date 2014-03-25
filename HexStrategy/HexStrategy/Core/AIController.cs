@@ -18,12 +18,20 @@ namespace HexStrategy
 
         public void Update()
         {
+
         }
 
         public void DayTick()
         {
-
             AnnexEmpty();
+        }
+
+        public void MonthTick()
+        {
+        }
+
+        public void YearTick()
+        {
         }
 
         private List<Army> GetIdleArmies()
@@ -37,10 +45,9 @@ namespace HexStrategy
             }
             return idle;
         }
+
         private Army GetIdleArmy()
         {
-            
-
             foreach (Army army in this.faction.armyList)
             {
                 if (army.IsSieging() == false)
@@ -49,6 +56,8 @@ namespace HexStrategy
 
             return null;
         }
+
+
         private void AnnexEmpty()
         {
             //First check whether our army is already sieging
@@ -68,5 +77,6 @@ namespace HexStrategy
                 }
             }
         }
+
     }
 }

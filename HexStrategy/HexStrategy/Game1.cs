@@ -48,7 +48,7 @@ namespace HexStrategy
         {
             Core.camera = new Camera(graphics.GraphicsDevice.Viewport.AspectRatio);
             Core.graphicsDevice = graphics.GraphicsDevice;
-            Core.graphicsDevice.RasterizerState = RasterizerState.CullNone;
+            Core.graphicsDevice.RasterizerState = RasterizerState.CullCounterClockwise;
             base.Initialize();
             Logger.AddMessage("Initialization complete");
         }
@@ -73,9 +73,7 @@ namespace HexStrategy
             Core.factions.Add(new Faction("Leon", new Vector3(90f/255f, 255f/255f, 0f)));
 
             Core.userFaction = Core.factions[2];
-            
-
-
+            Core.SetupFactionRelations();
 
             scenery = new Scenery();
 
@@ -130,7 +128,6 @@ namespace HexStrategy
 
             UserInterface.Draw(spriteBatch);
 
-            //spriteBatch.DrawString(Fonts.small, (1 / gameTime.ElapsedGameTime.TotalSeconds).ToString(), new Vector2(2, 2), Color.White);
             spriteBatch.End();
 
 

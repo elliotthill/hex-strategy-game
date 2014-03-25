@@ -22,7 +22,8 @@ namespace HexStrategy
             ultra = content.Load<SpriteFont>("Fonts/Georgia16pt");
 
             large.Spacing = 1.3f;
-            medium.Spacing = 1.3f;
+            medium.Spacing = 1.2f;
+            ultra.Spacing = 1.4f;
 		}
 
 	}
