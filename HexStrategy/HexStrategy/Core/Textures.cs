@@ -30,7 +30,7 @@ namespace HexStrategy
             shadow = content.Load<Texture2D>("Textures/shadow");
             grey = content.Load<Texture2D>("Textures/grey");
             darkGrey = content.Load<Texture2D>("Textures/dark_grey");
-			heightMap = content.Load<Texture2D> ("Textures/height_mallorca");
+			heightMap = content.Load<Texture2D> ("Textures/height");
 
             knight = content.Load<Texture2D>("Textures/knight");
             urbanGround = content.Load<Texture2D>("Textures/urbanground");

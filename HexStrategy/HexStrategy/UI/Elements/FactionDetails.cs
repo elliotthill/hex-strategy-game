@@ -59,10 +59,10 @@ namespace HexStrategy
             if (Core.userFaction != null)
             {
 
-                sb.DrawString(Fonts.ultra, Core.userFaction.name, textBounds["name"], Color.White);
+                sb.DrawString(Fonts.ultra, Core.userFaction.name + " " + Core.userFaction.infastructureTaxModifier, textBounds["name"], Color.White);
                 sb.DrawString(Fonts.large, Core.Format(Core.userFaction.treasury) + " (+" + Core.Format(Core.userFaction.lastDayTaxRevenue) +")", textBounds["money"], Color.White);
                 sb.DrawString(Fonts.large, "Food " + Core.Format(Core.userFaction.totalFood) + "(" + Core.userFaction.foodCost + ")", textBounds["food"], Color.White);
-                sb.DrawString(Fonts.large, "Pop " + Core.Format(Core.userFaction.population) + "(AGR %" + Core.userFaction.percentAgriculture + ")", textBounds["population"], Color.White);
+                sb.DrawString(Fonts.large, "Pop " + Core.Format(Core.userFaction.population) + "(AGR %" + Core.userFaction.percentRural*100f + ")", textBounds["population"], Color.White);
                 sb.DrawString(Fonts.large, Clock.dateTime.ToShortDateString(), textBounds["time"], Color.White);
             }
         }

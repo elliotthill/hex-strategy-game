@@ -20,7 +20,8 @@ namespace HexStrategy
         public float foodCost = 1f;
         public float totalFood = 0f;
         public float lastDayTaxRevenue = 0f;
-        public float percentAgriculture = 0.5f;
+        public float infastructureTaxModifier = 1f;
+        public float percentRural = 0.5f;
 
         public List<Diplomacy> diplomacy = new List<Diplomacy>();
 
@@ -64,6 +65,8 @@ namespace HexStrategy
             if (Core.userFaction != this)
                 aiController = new AIController(this);
 
+            foreach (Diplomacy diplo in diplomacy)
+                diplo.Reconstruct();
 
 
             CalculateBorders();
@@ -331,6 +334,8 @@ namespace HexStrategy
             population = 0f;
             totalFood = 0f;
             GDPc = 0f;
+            infastructureTaxModifier = 0f;
+            percentRural = 0f;
 
             //Calculate faction values first
             foreach (Hex hex in hexList)
@@ -339,25 +344,33 @@ namespace HexStrategy
                 population += hex.hexData.population;
                 totalFood += hex.hexData.agriculturalOutput;
                 GDPc += hex.hexData.tradeItemsOutput;
+                infastructureTaxModifier += hex.hexData.GetInfastructureModifier();
+
+                if(hex.hexData.buildingType == BuildingType.None)
+                percentRural += hex.hexData.population;
             }
 
             //Per capita
             GDPc = GDPc/ population;
 
+            //Find percentage
+            percentRural = percentRural / population;
+
+            //Avg
+            infastructureTaxModifier = infastructureTaxModifier / hexList.Count();
+
             foodCost = (population / totalFood)  + GetTaxRate();
+            //CLamp food
             foodCost = (foodCost < 0.5f) ? 0.5f : (foodCost > 2f) ? 2f : foodCost;
             
-            //If food cost is high, move more people to agriculture
-            if (foodCost > 1.1f)
-                percentAgriculture += 0.025f;
-            else if (foodCost < 0.9f)
-                percentAgriculture -= 0.025f;
 
             lastDayTaxRevenue = 0f;
+            
             foreach (Hex hex in hexList)
             {
-                hex.hexData.EconomicTick(foodCost, GetTaxRate(), GetTaxEff(), 1f, 1f, percentAgriculture);
-                lastDayTaxRevenue += hex.hexData.taxRevenue;
+                hex.hexData.EconomicTick(foodCost, GetTaxRate(), GetTaxEff(), 1f, 1f);
+                lastDayTaxRevenue += hex.hexData.taxRevenue * infastructureTaxModifier;
+                
             }
             treasury += lastDayTaxRevenue;
 
@@ -369,7 +382,7 @@ namespace HexStrategy
         /// <returns></returns>
         private float GetTaxEff()
         {
-            return 0.5f;
+            return 0.75f;
         }
 
         /// <summary>

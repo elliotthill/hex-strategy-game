@@ -15,7 +15,7 @@ namespace HexStrategy
         public static float seconds = 5f;
         public static ClockState clockState = ClockState.Running;
 
-        public static float timeCompression = 2f;
+        public static float timeCompression = 5f;
 
         public static DateTime dateTime = new DateTime(1200, 1, 1);
         public static int lastDayMonth = dateTime.Month;

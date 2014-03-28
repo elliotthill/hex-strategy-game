@@ -22,6 +22,10 @@ namespace HexStrategy
 
         public DiplomacyType diplomacyType = DiplomacyType.None;
 
+        public Diplomacy()
+        {
+        }
+
         public Diplomacy(Faction source, Faction target)
         {
             this.target = target;
@@ -31,6 +35,8 @@ namespace HexStrategy
             this.sourceId = Core.factions.IndexOf(source);
         }
 
+
+        //Called from faction.reconstruct
         public void Reconstruct()
         {
             this.target = Core.factions[targetId];

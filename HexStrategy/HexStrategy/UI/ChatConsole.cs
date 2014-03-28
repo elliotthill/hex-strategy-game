@@ -301,7 +301,16 @@ namespace HexStrategy
                                         if (faction != null)
                                             Core.userFaction = faction;
                                     }
+                                    else if (messageLower.StartsWith("paintall"))
+                                    {
+                                        String[] words = messageLower.Split(' ');
 
+                                        String terrainName = words[1];
+                                        TerrainType terrain = Core.FindTerrainName(words[1]);
+
+
+                                        Core.paintAll = terrain;
+                                    }
 
                                     FieldIsActive = false;
                                     Logger.AddMessage(message);

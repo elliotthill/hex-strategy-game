@@ -20,8 +20,8 @@ namespace HexStrategy
 
         public static float scrollSpeed = 5f;
 
-		public static int screenX = 1280;
-		public static int screenY = 768;
+		public static int screenX = 1440;
+		public static int screenY = 900;
 
 		public static float contrast = 1.3f;
 
@@ -51,7 +51,7 @@ namespace HexStrategy
 		public static List<Faction> factions = new List<Faction> ();
 		public static Faction userFaction;
         public static Faction giveallFaction;
-
+        public static TerrainType paintAll = TerrainType.None;
 
         /// <summary>
         /// Loads a new game from storage
@@ -165,6 +165,9 @@ namespace HexStrategy
 			else
 				rightClickLastFrame = false;
 
+            /* Keyboard terrain painting */
+
+
             mouseVector = new Vector2(mouseState.X, mouseState.Y);
 		}
 
@@ -242,6 +245,30 @@ namespace HexStrategy
             }
 
             return null;
+        }
+
+        public static TerrainType FindTerrainName(String name)
+        {
+
+            switch (name.ToLower())
+            {
+                case "plains":
+                    return TerrainType.Plains;
+                case "dryplains":
+                    return TerrainType.DryPlains;
+                case "coldplains":
+                    return TerrainType.ColdPlains;
+                case "desert":
+                    return TerrainType.Desert;
+                case "mountains":
+                    return TerrainType.Mountain;
+                case "forest":
+                    return TerrainType.Forest;
+                case "rainforest":
+                    return TerrainType.Rainforest;
+                default:
+                    return TerrainType.None;
+            }
         }
 
         public static String RandomTownName()

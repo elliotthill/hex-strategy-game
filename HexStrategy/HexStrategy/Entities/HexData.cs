@@ -14,6 +14,7 @@ namespace HexStrategy
 	}
 
 	public enum TerrainType{
+        None,
 
 		Water,
 		ShallowWater,
@@ -39,29 +40,29 @@ namespace HexStrategy
 
 	public class HexData
 	{
-		public BuildingType buildingType;
+		public BuildingType buildingType = BuildingType.None;
 		public TerrainType terrainType;
 
 
         public String name;
 
-        
-		public float population = 100f;
+        //Anything above 2500 is considered a city       
+		public float population = 0f;
 
         //Local GDP/c or average wage = Price of trade goods produced / population
-        public float GDPc = 600f;
+        public float GDPc = 0f;
 
         //Tax revenue = Population * GDP/c * Tax Rate * Tax collection efficiency
-        public float taxRevenue = 1f;
+        public float taxRevenue = 0f;
 
         //Population growth = 1/cost of food
         public float popGrowth = 1f;
 
         //Agricultural output = (local pop * %of pop employed in agriculture) * terrain modifier * agricultural 
-        public float agriculturalOutput = 40f;
+        public float agriculturalOutput = 0f;
 
         //Trade items output = local pop * local pop % not employed in agriculture * manufacturing efficiency
-        public float tradeItemsOutput = 60f;
+        public float tradeItemsOutput = 0f;
 
 		public float longtitude;
 		public float alpha = 1f;
@@ -95,7 +96,7 @@ namespace HexStrategy
 					this.terrainType = TerrainType.Snow;
 					this.alpha -= 0.2f;
 				}
-				else if (yellowness > 1.3f && this.alpha > 0.6f) {
+				else if (yellowness > 1.2f && this.alpha > 0.6f) {
 					this.terrainType = TerrainType.Desert;
 
 				} else if (lightness > 70)
@@ -116,45 +117,7 @@ namespace HexStrategy
 				this.alpha = (this.alpha / 1.3f) + 0.35f;
 			}
 
-            /* Algorithm that sets terrain type */
-			if (longtitude < 0.1f || longtitude > 0.9f)
-			{
-				if (this.terrainType == TerrainType.Plains)
-					this.terrainType = TerrainType.ColdPlains;
-
-			} else if (longtitude > 0.1f && longtitude < 0.2f)
-			{
-				if (this.terrainType == TerrainType.Plains && Core.RandomFloat() > (longtitude - 0.1f)*5f)
-					this.terrainType = TerrainType.ColdPlains;
-
-			} else if(longtitude > 0.8f && longtitude < 0.9f)
-			{
-				if (this.terrainType == TerrainType.Plains && Core.RandomFloat() < (longtitude -0.8f)*10f)
-					this.terrainType = TerrainType.ColdPlains;
-
-
-			}else if ((longtitude > 0.2f && longtitude < 0.3f) ||  (longtitude > 0.7f && longtitude < 0.8f))
-			{
-
-
-			} else if ((longtitude > 0.3f && longtitude < 0.4f) || (longtitude > 0.6f && longtitude < 0.7f))
-			{
-				if (this.terrainType == TerrainType.Plains && Core.RandomFloat() < 0.7f)
-					this.terrainType = TerrainType.DryPlains;
-
-
-			} else if ((longtitude > 0.4f && longtitude < 0.5f) ||  (longtitude > 0.5f && longtitude < 0.6f))
-			{
-				if (this.terrainType == TerrainType.Forest)
-					this.terrainType = TerrainType.Rainforest;
-
-				if (this.terrainType == TerrainType.Mountain && Core.RandomFloat() < 0.4f)
-					this.terrainType = TerrainType.Steppe;
-
-				if (this.terrainType == TerrainType.Plains && Core.RandomFloat() < 0.7f)
-					this.terrainType = TerrainType.DryPlains;
-
-			}
+            
             color = new Color((this.alpha / 2) + 0.1f, (this.alpha / 2) + 0.1f,( this.alpha / 2) + 0.1f);
 
             SetPopulation();
@@ -165,33 +128,90 @@ namespace HexStrategy
             switch (this.terrainType)
             {
                 case TerrainType.Plains:
-                    population = 100;
+                    population = 300f;
                     break;
 
                 case TerrainType.DryPlains:
-                    population = 100;
+                    population = 250f;
                     break;
 
                 case TerrainType.ColdPlains:
-                    population = 80;
+                    population = 280f;
+                    break;
+
+                case TerrainType.Forest:
+                    population = 280f;
+                    break;
+
+                case TerrainType.Mountain:
+                    population = 140f;
                     break;
             }
         }
 
         public void EconomicTick(float foodCost, float taxRate, float taxEff, float agriculturalEff
-            , float manufacturingEff, float percentAgriculture)
+            , float manufacturingEff)
         {
+            if (population < 1f)
+                return;
 
             GDPc = (tradeItemsOutput) / population;
             taxRevenue = (population * GDPc * taxRate * taxEff)/365f;
 
-            popGrowth = (1f - foodCost)/365f;
-            population += population * popGrowth;
-
+            
             
 
-            agriculturalOutput = ((population * percentAgriculture))*2f* GetAgricultureModifier() * agriculturalEff;
-            tradeItemsOutput = (population * (1f - percentAgriculture))*1000f * GetManufacturingModifier() * manufacturingEff; 
+
+            if (buildingType != BuildingType.None)
+            {
+                //Its a town, no food output, all in trade items
+                agriculturalOutput = 0f;
+                tradeItemsOutput = population * 1000f * GetManufacturingModifier() * manufacturingEff;
+
+                //Cheap food? MOve to city, 
+                popGrowth = (1f - foodCost) / 365f;
+            }
+            else
+            {
+                agriculturalOutput = ((population)) * 2f * GetAgricultureModifier() * agriculturalEff;
+                tradeItemsOutput = 0f;
+
+                //Expensive food? move to rural (with penalty)
+                popGrowth = ((foodCost - 1f) * 0.5f) / 365f;
+            }
+
+            population += population * popGrowth;
+
+            if (population > 2500 && buildingType == BuildingType.None)
+                buildingType = BuildingType.Town;
+            else if (population < 2000 && buildingType != BuildingType.None)
+                buildingType = BuildingType.None;
+                
+
+            
+        }
+
+        //TODO instead of penalsing amount of desert, we should trace route from capital to see if hex is cutt off from capital by desert
+        public float GetInfastructureModifier()
+        {
+            switch (terrainType)
+            {
+                case TerrainType.Plains:
+                    return 1f;
+                case TerrainType.ColdPlains:
+                    return 0.9f;
+                case TerrainType.DryPlains:
+                    return 0.9f;
+                case TerrainType.Forest:
+                    return 0.95f;
+                case TerrainType.Mountain:
+                    return 0.9f;
+                case TerrainType.Desert:
+                    return 0.6f;
+
+            }
+
+            return 0.75f;
         }
 
         public float GetAgricultureModifier()
@@ -209,7 +229,7 @@ namespace HexStrategy
 
             }
 
-            return 0f;
+            return 0.1f;
         }
 
         public float GetManufacturingModifier()

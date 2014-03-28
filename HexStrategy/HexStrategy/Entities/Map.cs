@@ -157,7 +157,7 @@ namespace HexStrategy
 
 
                 /* Check each tile */
-                foreach (Hex hex in hexList)
+                foreach (Hex hex in visibleHex)
                 {
 
                     if (Core.camera.GetHexCullState(hex) == CullState.Culled)
@@ -171,6 +171,8 @@ namespace HexStrategy
                     {
                         if (Core.giveallFaction != null && hex.IsNotWater())
                             Core.giveallFaction.AnnexHex(hex);
+                        if (Core.paintAll != TerrainType.None && hex.IsNotWater())
+                            hex.hexData.terrainType = Core.paintAll;
 
                         //User clicked this hex
                         this.selectedHex = hex;
@@ -192,7 +194,7 @@ namespace HexStrategy
                     //User has moved his army
 
                     //Check for tile army should move to
-                    foreach (Hex hex in hexList)
+                    foreach (Hex hex in visibleHex)
                     {
 
                         if (Core.camera.GetHexCullState(hex) == CullState.Culled)
@@ -227,7 +229,7 @@ namespace HexStrategy
             }
             //IF camera really zoomed out only draw faction filter
 
-            if (Core.camera.position.Y < 180f)
+            if (Core.camera.position.Y < 250f)
             {
                 /* Sort those visible hexes into sublists for batch rendering */
                 plainHex.Clear();
@@ -302,14 +304,21 @@ namespace HexStrategy
 
                 }
 
-                Model hexModel = Meshes.hexTopInstanced;
+                Model hexModel;
+                if (Core.camera.position.Y < 70f)
+                    hexModel = Meshes.hexTopInstanced;
+                else
+                    hexModel = Meshes.hexTop;
+                    
 
                 /* Batch draw each sublist */
                 Render.DrawInstances(plainHex, hexModel, Textures.green, 1f);
                 Render.DrawInstances(desertHex, hexModel, Textures.yellow, 1f);
                 Render.DrawInstances(dryPlainHex, hexModel, Textures.lightGreen, 1f);
+
                 Render.DrawInstances(waterHex, Meshes.hexTop, Textures.blue, 1f);
                 Render.DrawInstances(shallowWaterHex, Meshes.hexTop, Textures.blue, 1f);
+
                 Render.DrawInstances(mountainHex, hexModel, Textures.tree, 1f);
                 Render.DrawInstances(forestHex, hexModel, Textures.tree, 1f);
                 Render.DrawInstances(coldPlainHex, hexModel, Textures.snow, 1f);
@@ -348,7 +357,7 @@ namespace HexStrategy
                 foreach (Faction faction in Core.factions)
                 {
                     Render.DrawInstances(faction.GetVisible(), Meshes.hexTopInstanced, Textures.white, 0.3f, true);
-                    Render.DrawInstances(faction.GetBordersVisible(), Meshes.hexTopInstanced, Textures.white, 0.4f, true);
+                    Render.DrawInstances(faction.GetBordersVisible(), Meshes.hexTopInstanced, Textures.white, 0.6f, true);
 
                 }
                 Render.setWorld(Matrix.Identity);
