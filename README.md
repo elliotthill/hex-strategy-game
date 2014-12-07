@@ -11,3 +11,7 @@ Screenshots
 Requirements
 --------------
 Visual studio with XNA libraries.
+
+Other
+---
+Check Lootr.com a cool [Amazon price tracker](http://www.lootr.com)
